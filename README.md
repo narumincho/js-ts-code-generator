@@ -1,23 +1,19 @@
-[![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/narumincho/js-ts-code-generator)
-
-# js-ts-code-generator
-
-[![npm version](https://badge.fury.io/js/js-ts-code-generator.svg)](https://badge.fury.io/js/js-ts-code-generator)
-[![NPM](https://nodei.co/npm/js-ts-code-generator.png)](https://nodei.co/npm/js-ts-code-generator/)
-
-# https://github.com/narumincho/Definy に マージしました. このリポジトリはもう使いません
+# @narumincho/js-ts-code-generator
 
 ## コンセプト
 
-[Definy](https://github.com/narumincho/Definy) で TypeScript, JavaScript のコードを生成したかったので作った.
+- [definy](https://github.com/narumincho/definy)
+- [commection](https://github.com/narumincho/commection)
+
+などで TypeScript, JavaScript のコードを生成したかったので作った
 
 - 入力値は, 構造化されているので TypeScript の AST(抽象構文木)とは違う
 - 出力した形式は人間にも読みやすい
-- Node.js でもブラウザでも動く
+- Deno でもブラウザでも動く
 - 予約語はあまり気にしなくて良い
 - 対応している構文は一部だけ
 
-Node.js, ブラウザ, 両方対応
+Deno, ブラウザ, 両方対応
 
 ## sample code サンプルコード
 

@@ -1,4 +1,8 @@
-import { Identifer } from "./data";
+export type TsIdentifier = string & { _tsIdentifier: never };
+
+const tsIdentifierFromString = (value: string): TsIdentifier => {
+  return value as TsIdentifier;
+};
 
 /**
  * 識別子を文字列から無理矢理でも生成する.
@@ -6,28 +10,29 @@ import { Identifer } from "./data";
  * 識別子に使えない文字が含まれていた場合, 末尾に_がつくか, $マークでエンコードされる
  * @param text
  */
-export const fromString = (word: string): Identifer => {
+export const identifierFromString = (word: string): TsIdentifier => {
   const [firstChar] = word;
   if (firstChar === undefined) {
-    return Identifer.Identifer("$00");
+    return tsIdentifierFromString("$00");
   }
-  let result = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ$_".includes(
-    firstChar
-  )
-    ? firstChar
-    : escapeChar(firstChar);
+  let result =
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ$_".includes(firstChar)
+      ? firstChar
+      : escapeChar(firstChar);
   const slicedWord = word.slice(1);
   for (const char of slicedWord) {
-    result += "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ$_0123456789".includes(
-      char
-    )
-      ? char
-      : escapeChar(char);
+    result +=
+      "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ$_0123456789"
+          .includes(
+            char,
+          )
+        ? char
+        : escapeChar(char);
   }
   if (reservedByLanguageWordSet.has(word)) {
-    return Identifer.Identifer(result + "_");
+    return tsIdentifierFromString(result + "_");
   }
-  return Identifer.Identifer(result);
+  return tsIdentifierFromString(result);
 };
 
 const escapeChar = (char: string): string =>
@@ -94,7 +99,6 @@ const reservedByLanguageWordSet: ReadonlySet<string> = new Set([
   "set",
   "string",
   "symbol",
-  "type",
   "from",
   "of",
   "as",
@@ -110,27 +114,27 @@ const reservedByLanguageWordSet: ReadonlySet<string> = new Set([
 /**
  * 識別子のID
  */
-export type IdentiferIndex = number & { _identiferIndex: never };
+export type IdentifierIndex = number & { _identifierIndex: never };
 
 /** 初期インデックス */
-export const initialIdentiferIndex = 0 as IdentiferIndex;
+export const initialIdentifierIndex = 0 as IdentifierIndex;
 
 /**
  * 識別子を生成する
- * @param identiferIndex 識別子を生成するインデックス
+ * @param identifierIndex 識別子を生成するインデックス
  * @param reserved 言語の予約語と別に使わない識別子
  */
-export const createIdentifer = (
-  identiferIndex: IdentiferIndex,
-  reserved: ReadonlySet<string>
-): { identifer: Identifer; nextIdentiferIndex: IdentiferIndex } => {
-  let index: number = identiferIndex;
+export const createIdentifier = (
+  identifierIndex: IdentifierIndex,
+  reserved: ReadonlySet<string>,
+): { identifier: TsIdentifier; nextIdentifierIndex: IdentifierIndex } => {
+  let index: number = identifierIndex;
   while (true) {
-    const result = createIdentiferByIndex(index);
+    const result = createIdentifierByIndex(index);
     if (!reserved.has(result) && !reservedByLanguageWordSet.has(result)) {
       return {
-        identifer: Identifer.Identifer(result),
-        nextIdentiferIndex: (index + 1) as IdentiferIndex,
+        identifier: tsIdentifierFromString(result),
+        nextIdentifierIndex: (index + 1) as IdentifierIndex,
       };
     }
     index += 1;
@@ -141,24 +145,21 @@ export const createIdentifer = (
  * indexから識別子を生成する (予約語を考慮しない)
  * @param index
  */
-const createIdentiferByIndex = (index: number): string => {
-  const headIdentiferCharTable =
+const createIdentifierByIndex = (index: number): string => {
+  const headIdentifierCharTable =
     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  const noHeadIdentiferCharTable = headIdentiferCharTable + "0123456789";
-  const char = headIdentiferCharTable[index];
+  const noHeadIdentifierCharTable = headIdentifierCharTable + "0123456789";
+  const char = headIdentifierCharTable[index];
   if (typeof char === "string") {
     return char;
   }
   let result = "";
-  let offsetIndex = index - headIdentiferCharTable.length;
+  let offsetIndex = index - headIdentifierCharTable.length;
   while (true) {
-    const quotient = Math.floor(offsetIndex / noHeadIdentiferCharTable.length);
-    const first =
-      headIdentiferCharTable[
-        Math.floor(offsetIndex / noHeadIdentiferCharTable.length)
-      ];
-    const second = noHeadIdentiferCharTable[
-      offsetIndex % noHeadIdentiferCharTable.length
+    const quotient = Math.floor(offsetIndex / noHeadIdentifierCharTable.length);
+    const first = headIdentifierCharTable[quotient];
+    const second = noHeadIdentifierCharTable[
+      offsetIndex % noHeadIdentifierCharTable.length
     ] as string;
     if (typeof first === "string") {
       return first + second + result;
@@ -169,10 +170,10 @@ const createIdentiferByIndex = (index: number): string => {
 };
 
 /**
- *識別子として使える文字かどうか調べる。日本語の識別子は使えないものとする
+ * 識別子として使える文字かどうか調べる。日本語の識別子は使えないものとする
  * @param word 識別子として使えるかどうか調べるワード
  */
-export const isIdentifer = (word: string): boolean => {
+export const isIdentifier = (word: string): boolean => {
   if (!isSafePropertyName(word)) {
     return false;
   }
@@ -183,10 +184,10 @@ export const isIdentifer = (word: string): boolean => {
  * ```ts
  * ({ await: 32 }.await)
  * ({ "": "empty"}[""])
+ * ```
  *
  * プロパティ名として直接コードで指定できるかどうか
- * `isIdentifer`とは予約語を指定できるかの面で違う
- * ```
+ * {@link isIdentifier} とは予約語を指定できるかの面で違う
  */
 export const isSafePropertyName = (word: string): boolean => {
   const [firstChar] = word;
@@ -195,7 +196,7 @@ export const isSafePropertyName = (word: string): boolean => {
   }
   if (
     !"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ$_".includes(
-      firstChar
+      firstChar,
     )
   ) {
     return false;
@@ -203,9 +204,10 @@ export const isSafePropertyName = (word: string): boolean => {
   const slicedWord = word.slice(1);
   for (const char of slicedWord) {
     if (
-      !"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ$_0123456789".includes(
-        char
-      )
+      !"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ$_0123456789"
+        .includes(
+          char,
+        )
     ) {
       return false;
     }
