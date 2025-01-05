@@ -1,12 +1,12 @@
 import {
   createIdentifier,
   initialIdentifierIndex,
-  TsIdentifier,
+  type TsIdentifier,
 } from "./identifier.ts";
-import { UsedNameAndModulePathSet } from "./interface.ts";
+import type { UsedNameAndModulePathSet } from "./interface.ts";
 import { collectInCode } from "./collect.ts";
 import { toString } from "./toString.ts";
-import * as d from "./data.ts";
+import type * as d from "./data.ts";
 export * from "./identifier.ts";
 export * from "./interface.ts";
 export * as data from "./data.ts";

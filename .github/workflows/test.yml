@@ -13,3 +13,4 @@ jobs:
         with:
           deno-version: v2.x
       - run: deno test
+      - run: deno publish --dry-run

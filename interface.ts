@@ -1,4 +1,4 @@
-import * as d from "./data.ts";
+import type * as d from "./data.ts";
 import * as identifier from "./identifier.ts";
 
 /**
