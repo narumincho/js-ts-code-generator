@@ -1,3 +1,8 @@
 {
-  "typescript.tsdk": "node_modules/typescript/lib"
+  "deno.enable": true,
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "denoland.vscode-deno",
+  "[github-actions-workflow]": {
+    "editor.defaultFormatter": "denoland.vscode-deno"
+  }
 }

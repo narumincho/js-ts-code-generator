@@ -1,22 +1,30 @@
-import * as collect from "./collect";
-import * as identifer from "./identifer";
-import * as toString from "./toString";
-import * as util from "./util";
-import { CodeType, Identifer, JsTsCode } from "./data";
+import {
+  createIdentifier,
+  initialIdentifierIndex,
+  TsIdentifier,
+} from "./identifier.ts";
+import { UsedNameAndModulePathSet } from "./interface.ts";
+import { collectInCode } from "./collect.ts";
+import { toString } from "./toString.ts";
+import * as d from "./data.ts";
+export * from "./identifier.ts";
+export * from "./interface.ts";
+export * as data from "./data.ts";
 
 export const generateCodeAsString = (
-  code: JsTsCode,
-  codeType: CodeType
+  code: d.JsTsCode,
+  codeType: d.CodeType,
 ): string => {
   // グローバル空間にある名前とimportしたモジュールのパスを集める
-  const usedNameAndModulePath: util.UsedNameAndModulePathSet = collect.collectInCode(
-    code
-  );
+  const usedNameAndModulePath: UsedNameAndModulePathSet = collectInCode(code);
 
-  return toString.toString(
+  return toString(
     code,
-    createImportedModuleName(usedNameAndModulePath),
-    codeType
+    {
+      moduleMap: createImportedModuleName(usedNameAndModulePath),
+      usedNameSet: usedNameAndModulePath.usedNameSet,
+      codeType,
+    },
   );
 };
 
@@ -25,20 +33,20 @@ export const generateCodeAsString = (
  * @param usedNameAndModulePath
  */
 const createImportedModuleName = (
-  usedNameAndModulePath: util.UsedNameAndModulePathSet
-): ReadonlyMap<string, Identifer> => {
-  let identiferIndex = identifer.initialIdentiferIndex;
-  const importedModuleNameMap = new Map<string, Identifer>();
+  usedNameAndModulePath: UsedNameAndModulePathSet,
+): ReadonlyMap<string, TsIdentifier> => {
+  let identifierIndex = initialIdentifierIndex;
+  const importedModuleNameMap = new Map<string, TsIdentifier>();
   for (const modulePath of usedNameAndModulePath.modulePathSet) {
-    const identiferAndNextIdentiferIndex = identifer.createIdentifer(
-      identiferIndex,
-      usedNameAndModulePath.usedNameSet
+    const identifierAndNextIdentifierIndex = createIdentifier(
+      identifierIndex,
+      usedNameAndModulePath.usedNameSet,
     );
     importedModuleNameMap.set(
       modulePath,
-      identiferAndNextIdentiferIndex.identifer
+      identifierAndNextIdentifierIndex.identifier,
     );
-    identiferIndex = identiferAndNextIdentiferIndex.nextIdentiferIndex;
+    identifierIndex = identifierAndNextIdentifierIndex.nextIdentifierIndex;
   }
   return importedModuleNameMap;
 };
