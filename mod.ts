@@ -15,7 +15,7 @@ export * from "./data.ts";
  * コードを表現した {@link JsTsCode} からコードの文字列の表現に変換する
  */
 export function generateCodeAsString(
-  { code, codeType, generatedByLinks }: {
+  { code, codeType, generatedByLinks = [] }: {
     code: JsTsCode;
     codeType: CodeType;
     /**
@@ -23,7 +23,7 @@ export function generateCodeAsString(
      *
      * 指定することによって, モジュールドキュメントに出力される
      */
-    generatedByLinks: ReadonlyArray<string>;
+    generatedByLinks?: ReadonlyArray<string>;
   },
 ): string {
   // グローバル空間にある名前とimportしたモジュールのパスを集める

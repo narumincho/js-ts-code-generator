@@ -52,10 +52,10 @@ const sampleCode: jsTs.JsTsCode = {
   ],
   statementList: [],
 };
-const nodeJsTypeScriptCode = jsTs.generateCodeAsString(
-  sampleCode,
-  "TypeScript",
-);
+const nodeJsTypeScriptCode = jsTs.generateCodeAsString({
+  code: sampleCode,
+  codeType: "TypeScript",
+});
 console.log(nodeJsTypeScriptCode);
 Deno.test("return string", () => {
   assertEquals(typeof nodeJsTypeScriptCode, "string");
@@ -70,8 +70,8 @@ Deno.test("include import path", () => {
 });
 
 Deno.test("not include revered word", () => {
-  const codeAsString = jsTs.generateCodeAsString(
-    {
+  const codeAsString = jsTs.generateCodeAsString({
+    code: {
       exportDefinitionList: [
         jsTs.exportDefinitionFunction({
           isAsync: false,
@@ -85,16 +85,16 @@ Deno.test("not include revered word", () => {
       ],
       statementList: [],
     },
-    "TypeScript",
-  );
+    codeType: "TypeScript",
+  });
 
   console.log("new code", codeAsString);
   assertNotMatch(codeAsString, /const new =/u);
 });
 
 Deno.test("識別子として使えない文字は, 変更される", () => {
-  const codeAsString = jsTs.generateCodeAsString(
-    {
+  const codeAsString = jsTs.generateCodeAsString({
+    code: {
       exportDefinitionList: [
         jsTs.exportDefinitionFunction({
           isAsync: false,
@@ -108,8 +108,8 @@ Deno.test("識別子として使えない文字は, 変更される", () => {
       ],
       statementList: [],
     },
-    "TypeScript",
-  );
+    codeType: "TypeScript",
+  });
   console.log(codeAsString);
   assertNotMatch(codeAsString, /const 0name/u);
 });
@@ -146,7 +146,10 @@ Deno.test("escape string literal", () => {
     ],
     statementList: [],
   };
-  const codeAsString = jsTs.generateCodeAsString(nodeJsCode, "TypeScript");
+  const codeAsString = jsTs.generateCodeAsString({
+    code: nodeJsCode,
+    codeType: "TypeScript",
+  });
   console.log(codeAsString);
   assertMatch(codeAsString, /\\"/u);
   assertMatch(codeAsString, /\\n/u);
@@ -240,13 +243,16 @@ Deno.test("include function parameter name", () => {
     ],
     statementList: [],
   };
-  const code = jsTs.generateCodeAsString(nodeJsCode, "TypeScript");
+  const code = jsTs.generateCodeAsString({
+    code: nodeJsCode,
+    codeType: "TypeScript",
+  });
   console.log(code);
   assertMatch(code, /request/u);
 });
 Deno.test("get array index", () => {
-  const code = jsTs.generateCodeAsString(
-    {
+  const code = jsTs.generateCodeAsString({
+    code: {
       exportDefinitionList: [
         jsTs.exportDefinitionFunction({
           isAsync: false,
@@ -274,13 +280,13 @@ Deno.test("get array index", () => {
       ],
       statementList: [],
     },
-    "TypeScript",
-  );
+    codeType: "TypeScript",
+  });
   console.log(code);
   assertMatch(code, /\[0\]/u);
 });
-const scopedCode = jsTs.generateCodeAsString(
-  {
+const scopedCode = jsTs.generateCodeAsString({
+  code: {
     exportDefinitionList: [],
     statementList: [
       {
@@ -295,8 +301,8 @@ const scopedCode = jsTs.generateCodeAsString(
       jsTs.consoleLog(jsTs.variable(jsTs.identifierFromString("sorena"))),
     ],
   },
-  "JavaScript",
-);
+  codeType: "JavaScript",
+});
 
 Deno.test("statementList in { } scope curly braces", () => {
   console.log(scopedCode);
@@ -306,8 +312,8 @@ Deno.test("ESModules Browser Code not include type ", () => {
   assertNotMatch(scopedCode, /string/);
 });
 Deno.test("type parameter", () => {
-  const code = jsTs.generateCodeAsString(
-    {
+  const code = jsTs.generateCodeAsString({
+    code: {
       exportDefinitionList: [
         jsTs.exportDefinitionFunction({
           isAsync: false,
@@ -321,14 +327,14 @@ Deno.test("type parameter", () => {
       ],
       statementList: [],
     },
-    "TypeScript",
-  );
+    codeType: "TypeScript",
+  });
   console.log(code);
   assertMatch(code, /Promise<string>/u);
 });
 Deno.test("object literal key is escaped", () => {
-  const code = jsTs.generateCodeAsString(
-    {
+  const code = jsTs.generateCodeAsString({
+    code: {
       exportDefinitionList: [],
       statementList: [
         jsTs.statementEvaluateExpr(
@@ -339,14 +345,14 @@ Deno.test("object literal key is escaped", () => {
         ),
       ],
     },
-    "TypeScript",
-  );
+    codeType: "TypeScript",
+  });
   console.log(code);
   assertMatch(code, /"a b c"/u);
 });
 Deno.test("binary operator combine", () => {
-  const code = jsTs.generateCodeAsString(
-    {
+  const code = jsTs.generateCodeAsString({
+    code: {
       exportDefinitionList: [],
       statementList: [
         jsTs.statementEvaluateExpr(
@@ -375,16 +381,16 @@ Deno.test("binary operator combine", () => {
         ),
       ],
     },
-    "JavaScript",
-  );
+    codeType: "JavaScript",
+  });
   console.log(code);
   assert(
     code.includes("3 * 9 + 7 * 6 === 2 + 3 + (5 + 8) === 5 * (7 + 8)"),
   );
 });
 Deno.test("object literal return need parenthesis", () => {
-  const code = jsTs.generateCodeAsString(
-    {
+  const code = jsTs.generateCodeAsString({
+    code: {
       exportDefinitionList: [
         jsTs.exportDefinitionFunction({
           isAsync: false,
@@ -418,15 +424,15 @@ Deno.test("object literal return need parenthesis", () => {
       ],
       statementList: [],
     },
-    "TypeScript",
-  );
+    codeType: "TypeScript",
+  });
   console.log(code);
   assertMatch(code, /\(\{.*\}\)/u);
 });
 Deno.test("let variable", () => {
   const v = jsTs.identifierFromString("v");
-  const code = jsTs.generateCodeAsString(
-    {
+  const code = jsTs.generateCodeAsString({
+    code: {
       exportDefinitionList: [],
       statementList: [
         {
@@ -456,8 +462,8 @@ Deno.test("let variable", () => {
         },
       ],
     },
-    "TypeScript",
-  );
+    codeType: "TypeScript",
+  });
   console.log(code);
   assertMatch(code, /let v: number = 10;[\n ]*v = 30;[\n ]*v \+= 1;/u);
 });
@@ -496,7 +502,10 @@ Deno.test("for of", () => {
       },
     ],
   };
-  const codeAsString = jsTs.generateCodeAsString(code, "TypeScript");
+  const codeAsString = jsTs.generateCodeAsString({
+    code,
+    codeType: "TypeScript",
+  });
   console.log(codeAsString);
   assertMatch(codeAsString, /for .* of \[1, 2, \.\.\.\[3, 4, 5\] *\]/u);
 });
@@ -625,7 +634,10 @@ Deno.test("switch", () => {
     ],
     statementList: [],
   };
-  const codeAsString = jsTs.generateCodeAsString(code, "TypeScript");
+  const codeAsString = jsTs.generateCodeAsString({
+    code,
+    codeType: "TypeScript",
+  });
   console.log(codeAsString);
   assertMatch(codeAsString, /switch \(.+\) \{\n +case .+:/u);
 });
@@ -642,7 +654,10 @@ Deno.test("Type Assertion", () => {
       }),
     ],
   };
-  const codeAsString = jsTs.generateCodeAsString(code, "TypeScript");
+  const codeAsString = jsTs.generateCodeAsString({
+    code,
+    codeType: "TypeScript",
+  });
   console.log(codeAsString);
   assertMatch(codeAsString, /as globalThis.Date/u);
 });
@@ -668,7 +683,10 @@ Deno.test("Type Intersection", () => {
     ],
     statementList: [],
   };
-  const codeAsString = jsTs.generateCodeAsString(code, "TypeScript");
+  const codeAsString = jsTs.generateCodeAsString({
+    code,
+    codeType: "TypeScript",
+  });
   console.log(codeAsString);
   assertMatch(codeAsString, /globalThis.Date & globalThis.Uint8Array/u);
 });
@@ -713,7 +731,10 @@ Deno.test("object literal spread syntax", () => {
       ),
     ],
   };
-  const codeAsString = jsTs.generateCodeAsString(code, "TypeScript");
+  const codeAsString = jsTs.generateCodeAsString({
+    code,
+    codeType: "TypeScript",
+  });
   console.log(codeAsString);
   assertMatch(codeAsString, /\{ *\.\.\.value *, *b: 987 \}/u);
 });
@@ -747,7 +768,10 @@ Deno.test("type property document", () => {
     ],
     statementList: [],
   };
-  const codeAsString = jsTs.generateCodeAsString(code, "TypeScript");
+  const codeAsString = jsTs.generateCodeAsString({
+    code,
+    codeType: "TypeScript",
+  });
   console.log(codeAsString);
   assertMatch(codeAsString, /日にちの中のミリ秒. 0 to 86399999/u);
 });
@@ -834,7 +858,10 @@ Deno.test("output lambda type parameter", () => {
       },
     ],
   };
-  const codeAsString = jsTs.generateCodeAsString(code, "TypeScript");
+  const codeAsString = jsTs.generateCodeAsString({
+    code,
+    codeType: "TypeScript",
+  });
   console.log(codeAsString);
   assertMatch(
     codeAsString,
@@ -872,7 +899,10 @@ Deno.test("output optional type member", () => {
     ],
     statementList: [],
   };
-  const codeAsString = jsTs.generateCodeAsString(code, "TypeScript");
+  const codeAsString = jsTs.generateCodeAsString({
+    code,
+    codeType: "TypeScript",
+  });
   console.log(codeAsString);
   assertMatch(codeAsString, /readonly age\?: number/u);
 });
@@ -966,9 +996,12 @@ Deno.test("read me code", () => {
     statementList: [],
   };
   assertEquals(
-    jsTs.generateCodeAsString(serverCode, "TypeScript", []),
+    jsTs.generateCodeAsString({
+      code: serverCode,
+      codeType: "TypeScript",
+    }),
     `/** generated by
- * - https://jsr.io/@narumincho/js-ts-code-generator@0.0.12
+ * - https://jsr.io/@narumincho/js-ts-code-generator@0.2.0
  * Do not edit!
  *
  * @module
