@@ -41,7 +41,7 @@ const statementToTypeScriptCodeAsString = (
   context: Context,
 ): string => {
   const indentString = indentNumberToString(indent);
-  switch (statement._) {
+  switch (statement.type) {
     case "EvaluateExpr":
       return (
         indentString +

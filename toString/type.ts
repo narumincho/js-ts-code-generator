@@ -21,7 +21,7 @@ export const typeToString = (
   type_: d.TsType,
   context: Context,
 ): string => {
-  switch (type_._) {
+  switch (type_.type) {
     case "Number":
       return "number";
 
