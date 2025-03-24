@@ -6,15 +6,26 @@ import {
 import type { UsedNameAndModulePathSet } from "./interface.ts";
 import { collectInCode } from "./collect.ts";
 import { toString } from "./toString.ts";
-import type * as d from "./data.ts";
+import type { CodeType, JsTsCode } from "./data.ts";
 export * from "./identifier.ts";
 export * from "./interface.ts";
-export * as data from "./data.ts";
+export * from "./data.ts";
 
-export const generateCodeAsString = (
-  code: d.JsTsCode,
-  codeType: d.CodeType,
-): string => {
+/**
+ * コードを表現した {@link JsTsCode} からコードの文字列の表現に変換する
+ */
+export function generateCodeAsString(
+  { code, codeType, generatedByLinks = [] }: {
+    code: JsTsCode;
+    codeType: CodeType;
+    /**
+     * コード生成に使用したライブラリの名前やリンク
+     *
+     * 指定することによって, モジュールドキュメントに出力される
+     */
+    generatedByLinks?: ReadonlyArray<string>;
+  },
+): string {
   // グローバル空間にある名前とimportしたモジュールのパスを集める
   const usedNameAndModulePath: UsedNameAndModulePathSet = collectInCode(code);
 
@@ -25,8 +36,9 @@ export const generateCodeAsString = (
       usedNameSet: usedNameAndModulePath.usedNameSet,
       codeType,
     },
+    generatedByLinks,
   );
-};
+}
 
 /**
  * 使われている名前, モジュールのパスから, モジュールのパスとnamed importの識別子のMapを生成する

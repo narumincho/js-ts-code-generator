@@ -6,8 +6,8 @@ import {
 } from "jsr:@std/assert";
 import * as jsTs from "./mod.ts";
 
-const expressRequest: jsTs.data.TsType = {
-  _: "ImportedType",
+const expressRequest: jsTs.TsType = {
+  type: "ImportedType",
   importedType: {
     moduleName: "express",
     nameAndArguments: {
@@ -16,8 +16,8 @@ const expressRequest: jsTs.data.TsType = {
     },
   },
 };
-const expressResponse: jsTs.data.TsType = {
-  _: "ImportedType",
+const expressResponse: jsTs.TsType = {
+  type: "ImportedType",
   importedType: {
     moduleName: "express",
     nameAndArguments: {
@@ -27,7 +27,7 @@ const expressResponse: jsTs.data.TsType = {
   },
 };
 
-const sampleCode: jsTs.data.JsTsCode = {
+const sampleCode: jsTs.JsTsCode = {
   exportDefinitionList: [
     jsTs.exportDefinitionFunction({
       isAsync: false,
@@ -46,16 +46,16 @@ const sampleCode: jsTs.data.JsTsCode = {
         },
       ],
       document: "ミドルウェア",
-      returnType: { _: "Void" },
+      returnType: { type: "Void" },
       statementList: [],
     }),
   ],
   statementList: [],
 };
-const nodeJsTypeScriptCode = jsTs.generateCodeAsString(
-  sampleCode,
-  "TypeScript",
-);
+const nodeJsTypeScriptCode = jsTs.generateCodeAsString({
+  code: sampleCode,
+  codeType: "TypeScript",
+});
 console.log(nodeJsTypeScriptCode);
 Deno.test("return string", () => {
   assertEquals(typeof nodeJsTypeScriptCode, "string");
@@ -70,8 +70,8 @@ Deno.test("include import path", () => {
 });
 
 Deno.test("not include revered word", () => {
-  const codeAsString = jsTs.generateCodeAsString(
-    {
+  const codeAsString = jsTs.generateCodeAsString({
+    code: {
       exportDefinitionList: [
         jsTs.exportDefinitionFunction({
           isAsync: false,
@@ -79,22 +79,22 @@ Deno.test("not include revered word", () => {
           document: "newという名前の関数",
           typeParameterList: [],
           parameterList: [],
-          returnType: { _: "Void" },
+          returnType: { type: "Void" },
           statementList: [],
         }),
       ],
       statementList: [],
     },
-    "TypeScript",
-  );
+    codeType: "TypeScript",
+  });
 
   console.log("new code", codeAsString);
   assertNotMatch(codeAsString, /const new =/u);
 });
 
 Deno.test("識別子として使えない文字は, 変更される", () => {
-  const codeAsString = jsTs.generateCodeAsString(
-    {
+  const codeAsString = jsTs.generateCodeAsString({
+    code: {
       exportDefinitionList: [
         jsTs.exportDefinitionFunction({
           isAsync: false,
@@ -102,14 +102,14 @@ Deno.test("識別子として使えない文字は, 変更される", () => {
           document: "0から始まる識別子",
           typeParameterList: [],
           parameterList: [],
-          returnType: { _: "Void" },
+          returnType: { type: "Void" },
           statementList: [],
         }),
       ],
       statementList: [],
     },
-    "TypeScript",
-  );
+    codeType: "TypeScript",
+  });
   console.log(codeAsString);
   assertNotMatch(codeAsString, /const 0name/u);
 });
@@ -128,14 +128,14 @@ Deno.test("識別子の生成で識別子に使えない文字が含まれてい
   }
 });
 Deno.test("escape string literal", () => {
-  const nodeJsCode: jsTs.data.JsTsCode = {
+  const nodeJsCode: jsTs.JsTsCode = {
     exportDefinitionList: [
       {
         type: "variable",
         variable: {
           name: jsTs.identifierFromString("stringValue"),
           document: "文字列リテラルでエスケープしているか調べる",
-          type: { _: "String" },
+          type: { type: "String" },
           expr: jsTs.stringLiteral(`
 
           改行
@@ -146,14 +146,17 @@ Deno.test("escape string literal", () => {
     ],
     statementList: [],
   };
-  const codeAsString = jsTs.generateCodeAsString(nodeJsCode, "TypeScript");
+  const codeAsString = jsTs.generateCodeAsString({
+    code: nodeJsCode,
+    codeType: "TypeScript",
+  });
   console.log(codeAsString);
   assertMatch(codeAsString, /\\"/u);
   assertMatch(codeAsString, /\\n/u);
 });
 
 Deno.test("include function parameter name", () => {
-  const nodeJsCode: jsTs.data.JsTsCode = {
+  const nodeJsCode: jsTs.JsTsCode = {
     exportDefinitionList: [
       jsTs.exportDefinitionFunction({
         isAsync: false,
@@ -165,7 +168,7 @@ Deno.test("include function parameter name", () => {
             name: jsTs.identifierFromString("request"),
             document: "リクエスト",
             type: {
-              _: "ImportedType",
+              type: "ImportedType",
               importedType: {
                 moduleName: "express",
                 nameAndArguments: {
@@ -179,7 +182,7 @@ Deno.test("include function parameter name", () => {
             name: jsTs.identifierFromString("response"),
             document: "レスポンス",
             type: {
-              _: "ImportedType",
+              type: "ImportedType",
               importedType: {
                 moduleName: "express",
                 nameAndArguments: {
@@ -190,13 +193,13 @@ Deno.test("include function parameter name", () => {
             },
           },
         ],
-        returnType: { _: "Void" },
+        returnType: { type: "Void" },
         statementList: [
           {
-            _: "VariableDefinition",
+            type: "VariableDefinition",
             variableDefinitionStatement: {
               name: jsTs.identifierFromString("accept"),
-              type: jsTs.typeUnion([{ _: "String" }, { _: "Undefined" }]),
+              type: jsTs.typeUnion([{ type: "String" }, { type: "Undefined" }]),
               isConst: true,
               expr: jsTs.get(
                 jsTs.get(
@@ -208,12 +211,12 @@ Deno.test("include function parameter name", () => {
             },
           },
           {
-            _: "If",
+            type: "If",
             ifStatement: {
               condition: jsTs.logicalAnd(
                 jsTs.notEqual(
                   jsTs.variable(jsTs.identifierFromString("accept")),
-                  { _: "UndefinedLiteral" },
+                  { type: "UndefinedLiteral" },
                 ),
                 jsTs.callMethod(
                   jsTs.variable(jsTs.identifierFromString("accept")),
@@ -240,13 +243,16 @@ Deno.test("include function parameter name", () => {
     ],
     statementList: [],
   };
-  const code = jsTs.generateCodeAsString(nodeJsCode, "TypeScript");
+  const code = jsTs.generateCodeAsString({
+    code: nodeJsCode,
+    codeType: "TypeScript",
+  });
   console.log(code);
   assertMatch(code, /request/u);
 });
 Deno.test("get array index", () => {
-  const code = jsTs.generateCodeAsString(
-    {
+  const code = jsTs.generateCodeAsString({
+    code: {
       exportDefinitionList: [
         jsTs.exportDefinitionFunction({
           isAsync: false,
@@ -260,10 +266,10 @@ Deno.test("get array index", () => {
               type: jsTs.uint8ArrayType,
             },
           ],
-          returnType: { _: "Number" },
+          returnType: { type: "Number" },
           statementList: [
             jsTs.statementReturn({
-              _: "Get",
+              type: "Get",
               getExpr: {
                 expr: jsTs.variable(jsTs.identifierFromString("array")),
                 propertyExpr: jsTs.numberLiteral(0),
@@ -274,29 +280,29 @@ Deno.test("get array index", () => {
       ],
       statementList: [],
     },
-    "TypeScript",
-  );
+    codeType: "TypeScript",
+  });
   console.log(code);
   assertMatch(code, /\[0\]/u);
 });
-const scopedCode = jsTs.generateCodeAsString(
-  {
+const scopedCode = jsTs.generateCodeAsString({
+  code: {
     exportDefinitionList: [],
     statementList: [
       {
-        _: "VariableDefinition",
+        type: "VariableDefinition",
         variableDefinitionStatement: {
           name: jsTs.identifierFromString("sorena"),
           isConst: false,
-          type: { _: "String" },
+          type: { type: "String" },
           expr: jsTs.stringLiteral("それな"),
         },
       },
       jsTs.consoleLog(jsTs.variable(jsTs.identifierFromString("sorena"))),
     ],
   },
-  "JavaScript",
-);
+  codeType: "JavaScript",
+});
 
 Deno.test("statementList in { } scope curly braces", () => {
   console.log(scopedCode);
@@ -306,8 +312,8 @@ Deno.test("ESModules Browser Code not include type ", () => {
   assertNotMatch(scopedCode, /string/);
 });
 Deno.test("type parameter", () => {
-  const code = jsTs.generateCodeAsString(
-    {
+  const code = jsTs.generateCodeAsString({
+    code: {
       exportDefinitionList: [
         jsTs.exportDefinitionFunction({
           isAsync: false,
@@ -315,20 +321,20 @@ Deno.test("type parameter", () => {
           document: "",
           typeParameterList: [],
           parameterList: [],
-          returnType: jsTs.promiseType({ _: "String" }),
+          returnType: jsTs.promiseType({ type: "String" }),
           statementList: [],
         }),
       ],
       statementList: [],
     },
-    "TypeScript",
-  );
+    codeType: "TypeScript",
+  });
   console.log(code);
   assertMatch(code, /Promise<string>/u);
 });
 Deno.test("object literal key is escaped", () => {
-  const code = jsTs.generateCodeAsString(
-    {
+  const code = jsTs.generateCodeAsString({
+    code: {
       exportDefinitionList: [],
       statementList: [
         jsTs.statementEvaluateExpr(
@@ -339,14 +345,14 @@ Deno.test("object literal key is escaped", () => {
         ),
       ],
     },
-    "TypeScript",
-  );
+    codeType: "TypeScript",
+  });
   console.log(code);
   assertMatch(code, /"a b c"/u);
 });
 Deno.test("binary operator combine", () => {
-  const code = jsTs.generateCodeAsString(
-    {
+  const code = jsTs.generateCodeAsString({
+    code: {
       exportDefinitionList: [],
       statementList: [
         jsTs.statementEvaluateExpr(
@@ -375,16 +381,16 @@ Deno.test("binary operator combine", () => {
         ),
       ],
     },
-    "JavaScript",
-  );
+    codeType: "JavaScript",
+  });
   console.log(code);
   assert(
     code.includes("3 * 9 + 7 * 6 === 2 + 3 + (5 + 8) === 5 * (7 + 8)"),
   );
 });
 Deno.test("object literal return need parenthesis", () => {
-  const code = jsTs.generateCodeAsString(
-    {
+  const code = jsTs.generateCodeAsString({
+    code: {
       exportDefinitionList: [
         jsTs.exportDefinitionFunction({
           isAsync: false,
@@ -396,13 +402,13 @@ Deno.test("object literal return need parenthesis", () => {
             {
               name: { type: "string", value: "name" },
               required: true,
-              type: { _: "String" },
+              type: { type: "String" },
               document: "",
             },
             {
               name: { type: "string", value: "age" },
               required: true,
-              type: { _: "Number" },
+              type: { type: "Number" },
               document: "",
             },
           ]),
@@ -418,28 +424,28 @@ Deno.test("object literal return need parenthesis", () => {
       ],
       statementList: [],
     },
-    "TypeScript",
-  );
+    codeType: "TypeScript",
+  });
   console.log(code);
   assertMatch(code, /\(\{.*\}\)/u);
 });
 Deno.test("let variable", () => {
   const v = jsTs.identifierFromString("v");
-  const code = jsTs.generateCodeAsString(
-    {
+  const code = jsTs.generateCodeAsString({
+    code: {
       exportDefinitionList: [],
       statementList: [
         {
-          _: "VariableDefinition",
+          type: "VariableDefinition",
           variableDefinitionStatement: {
             name: v,
-            type: { _: "Number" },
+            type: { type: "Number" },
             expr: jsTs.numberLiteral(10),
             isConst: false,
           },
         },
         {
-          _: "Set",
+          type: "Set",
           setStatement: {
             target: jsTs.variable(v),
             operatorMaybe: undefined,
@@ -447,7 +453,7 @@ Deno.test("let variable", () => {
           },
         },
         {
-          _: "Set",
+          type: "Set",
           setStatement: {
             target: jsTs.variable(v),
             operatorMaybe: "Addition",
@@ -456,27 +462,27 @@ Deno.test("let variable", () => {
         },
       ],
     },
-    "TypeScript",
-  );
+    codeType: "TypeScript",
+  });
   console.log(code);
   assertMatch(code, /let v: number = 10;[\n ]*v = 30;[\n ]*v \+= 1;/u);
 });
 Deno.test("for of", () => {
-  const code: jsTs.data.JsTsCode = {
+  const code: jsTs.JsTsCode = {
     exportDefinitionList: [],
     statementList: [
       {
-        _: "ForOf",
+        type: "ForOf",
         forOfStatement: {
           elementVariableName: jsTs.identifierFromString("element"),
           iterableExpr: {
-            _: "ArrayLiteral",
+            type: "ArrayLiteral",
             arrayItemList: [
               { expr: jsTs.numberLiteral(1), spread: false },
               { expr: jsTs.numberLiteral(2), spread: false },
               {
                 expr: {
-                  _: "ArrayLiteral",
+                  type: "ArrayLiteral",
                   arrayItemList: [
                     { expr: jsTs.numberLiteral(3), spread: false },
                     { expr: jsTs.numberLiteral(4), spread: false },
@@ -496,12 +502,15 @@ Deno.test("for of", () => {
       },
     ],
   };
-  const codeAsString = jsTs.generateCodeAsString(code, "TypeScript");
+  const codeAsString = jsTs.generateCodeAsString({
+    code,
+    codeType: "TypeScript",
+  });
   console.log(codeAsString);
   assertMatch(codeAsString, /for .* of \[1, 2, \.\.\.\[3, 4, 5\] *\]/u);
 });
 Deno.test("switch", () => {
-  const code: jsTs.data.JsTsCode = {
+  const code: jsTs.JsTsCode = {
     exportDefinitionList: [
       {
         type: "typeAlias",
@@ -518,7 +527,7 @@ Deno.test("switch", () => {
               {
                 name: { type: "string", value: "_" },
                 required: true,
-                type: { _: "StringLiteral", string: "Ok" },
+                type: { type: "StringLiteral", string: "Ok" },
                 document: "",
               },
               {
@@ -534,7 +543,7 @@ Deno.test("switch", () => {
               {
                 name: { type: "string", value: "_" },
                 required: true,
-                type: { _: "StringLiteral", string: "Error" },
+                type: { type: "StringLiteral", string: "Error" },
                 document: "Error",
               },
               {
@@ -562,7 +571,7 @@ Deno.test("switch", () => {
             name: jsTs.identifierFromString("value"),
             document: "",
             type: {
-              _: "ScopeInGlobal",
+              type: "ScopeInGlobal",
               typeNameAndTypeParameter: {
                 name: jsTs.identifierFromString("Result"),
                 arguments: [
@@ -577,10 +586,10 @@ Deno.test("switch", () => {
             },
           },
         ],
-        returnType: { _: "String" },
+        returnType: { type: "String" },
         statementList: [
           {
-            _: "Switch",
+            type: "Switch",
             switchStatement: {
               expr: jsTs.get(
                 jsTs.variable(jsTs.identifierFromString("value")),
@@ -625,16 +634,19 @@ Deno.test("switch", () => {
     ],
     statementList: [],
   };
-  const codeAsString = jsTs.generateCodeAsString(code, "TypeScript");
+  const codeAsString = jsTs.generateCodeAsString({
+    code,
+    codeType: "TypeScript",
+  });
   console.log(codeAsString);
   assertMatch(codeAsString, /switch \(.+\) \{\n +case .+:/u);
 });
 Deno.test("Type Assertion", () => {
-  const code: jsTs.data.JsTsCode = {
+  const code: jsTs.JsTsCode = {
     exportDefinitionList: [],
     statementList: [
       jsTs.statementEvaluateExpr({
-        _: "TypeAssertion",
+        type: "TypeAssertion",
         typeAssertion: {
           expr: jsTs.objectLiteral([]),
           type: jsTs.dateType,
@@ -642,12 +654,15 @@ Deno.test("Type Assertion", () => {
       }),
     ],
   };
-  const codeAsString = jsTs.generateCodeAsString(code, "TypeScript");
+  const codeAsString = jsTs.generateCodeAsString({
+    code,
+    codeType: "TypeScript",
+  });
   console.log(codeAsString);
   assertMatch(codeAsString, /as globalThis.Date/u);
 });
 Deno.test("Type Intersection", () => {
-  const code: jsTs.data.JsTsCode = {
+  const code: jsTs.JsTsCode = {
     exportDefinitionList: [
       {
         type: "typeAlias",
@@ -657,7 +672,7 @@ Deno.test("Type Intersection", () => {
           namespace: [],
           typeParameterList: [],
           type: {
-            _: "Intersection",
+            type: "Intersection",
             intersectionType: {
               left: jsTs.dateType,
               right: jsTs.uint8ArrayType,
@@ -668,17 +683,20 @@ Deno.test("Type Intersection", () => {
     ],
     statementList: [],
   };
-  const codeAsString = jsTs.generateCodeAsString(code, "TypeScript");
+  const codeAsString = jsTs.generateCodeAsString({
+    code,
+    codeType: "TypeScript",
+  });
   console.log(codeAsString);
   assertMatch(codeAsString, /globalThis.Date & globalThis.Uint8Array/u);
 });
 
 Deno.test("object literal spread syntax", () => {
-  const code: jsTs.data.JsTsCode = {
+  const code: jsTs.JsTsCode = {
     exportDefinitionList: [],
     statementList: [
       {
-        _: "VariableDefinition",
+        type: "VariableDefinition",
         variableDefinitionStatement: {
           name: jsTs.identifierFromString("value"),
           isConst: true,
@@ -686,13 +704,13 @@ Deno.test("object literal spread syntax", () => {
             {
               name: { type: "string", value: "a" },
               required: true,
-              type: { _: "String" },
+              type: { type: "String" },
               document: "",
             },
             {
               name: { type: "string", value: "b" },
               required: true,
-              type: { _: "Number" },
+              type: { type: "Number" },
               document: "",
             },
           ]),
@@ -705,7 +723,7 @@ Deno.test("object literal spread syntax", () => {
       jsTs.consoleLog(
         jsTs.objectLiteral([
           {
-            _: "Spread",
+            type: "Spread",
             tsExpr: jsTs.variable(jsTs.identifierFromString("value")),
           },
           jsTs.memberKeyValue("b", jsTs.numberLiteral(987)),
@@ -713,13 +731,16 @@ Deno.test("object literal spread syntax", () => {
       ),
     ],
   };
-  const codeAsString = jsTs.generateCodeAsString(code, "TypeScript");
+  const codeAsString = jsTs.generateCodeAsString({
+    code,
+    codeType: "TypeScript",
+  });
   console.log(codeAsString);
   assertMatch(codeAsString, /\{ *\.\.\.value *, *b: 987 \}/u);
 });
 
 Deno.test("type property document", () => {
-  const code: jsTs.data.JsTsCode = {
+  const code: jsTs.JsTsCode = {
     exportDefinitionList: [
       {
         type: "typeAlias",
@@ -732,13 +753,13 @@ Deno.test("type property document", () => {
             {
               name: { type: "string", value: "day" },
               required: true,
-              type: { _: "Number" },
+              type: { type: "Number" },
               document: "1970-01-01からの経過日数. マイナスになることもある",
             },
             {
               name: { type: "string", value: "millisecond" },
               required: true,
-              type: { _: "Number" },
+              type: { type: "Number" },
               document: "日にちの中のミリ秒. 0 to 86399999 (=1000*60*60*24-1)",
             },
           ]),
@@ -747,23 +768,26 @@ Deno.test("type property document", () => {
     ],
     statementList: [],
   };
-  const codeAsString = jsTs.generateCodeAsString(code, "TypeScript");
+  const codeAsString = jsTs.generateCodeAsString({
+    code,
+    codeType: "TypeScript",
+  });
   console.log(codeAsString);
   assertMatch(codeAsString, /日にちの中のミリ秒. 0 to 86399999/u);
 });
 
 Deno.test("output lambda type parameter", () => {
   const typeParameterIdentifier = jsTs.identifierFromString("t");
-  const code: jsTs.data.JsTsCode = {
+  const code: jsTs.JsTsCode = {
     exportDefinitionList: [],
     statementList: [
       {
-        _: "VariableDefinition",
+        type: "VariableDefinition",
         variableDefinitionStatement: {
           name: jsTs.identifierFromString("sampleFunction"),
           isConst: true,
           type: {
-            _: "Function",
+            type: "Function",
             functionType: {
               typeParameterList: [{ name: typeParameterIdentifier }],
               parameterList: [
@@ -783,12 +807,12 @@ Deno.test("output lambda type parameter", () => {
                   required: true,
                   document: "",
                   type: {
-                    _: "ImportedType",
+                    type: "ImportedType",
                     importedType: {
                       moduleName: "sampleModule",
                       nameAndArguments: {
                         name: jsTs.identifierFromString("Type"),
-                        arguments: [{ _: "Number" }],
+                        arguments: [{ type: "Number" }],
                       },
                     },
                   },
@@ -797,7 +821,7 @@ Deno.test("output lambda type parameter", () => {
             },
           },
           expr: {
-            _: "Lambda",
+            type: "Lambda",
             lambdaExpr: {
               parameterList: [
                 {
@@ -834,7 +858,10 @@ Deno.test("output lambda type parameter", () => {
       },
     ],
   };
-  const codeAsString = jsTs.generateCodeAsString(code, "TypeScript");
+  const codeAsString = jsTs.generateCodeAsString({
+    code,
+    codeType: "TypeScript",
+  });
   console.log(codeAsString);
   assertMatch(
     codeAsString,
@@ -843,7 +870,7 @@ Deno.test("output lambda type parameter", () => {
 });
 
 Deno.test("output optional type member", () => {
-  const code: jsTs.data.JsTsCode = {
+  const code: jsTs.JsTsCode = {
     exportDefinitionList: [
       {
         type: "variable",
@@ -855,13 +882,13 @@ Deno.test("output optional type member", () => {
               name: { type: "string", value: "name" },
               required: true,
               document: "名前",
-              type: { _: "String" },
+              type: { type: "String" },
             },
             {
               name: { type: "string", value: "age" },
               required: false,
               document: "年齢",
-              type: { _: "Number" },
+              type: { type: "Number" },
             },
           ]),
           expr: jsTs.objectLiteral([
@@ -872,13 +899,16 @@ Deno.test("output optional type member", () => {
     ],
     statementList: [],
   };
-  const codeAsString = jsTs.generateCodeAsString(code, "TypeScript");
+  const codeAsString = jsTs.generateCodeAsString({
+    code,
+    codeType: "TypeScript",
+  });
   console.log(codeAsString);
   assertMatch(codeAsString, /readonly age\?: number/u);
 });
 
 Deno.test("read me code", () => {
-  const serverCode: jsTs.data.JsTsCode = {
+  const serverCode: jsTs.JsTsCode = {
     exportDefinitionList: [
       jsTs.exportDefinitionFunction({
         isAsync: false,
@@ -890,7 +920,7 @@ Deno.test("read me code", () => {
             name: jsTs.identifierFromString("request"),
             document: "リクエスト",
             type: {
-              _: "ImportedType",
+              type: "ImportedType",
               importedType: {
                 moduleName: "express",
                 nameAndArguments: {
@@ -904,7 +934,7 @@ Deno.test("read me code", () => {
             name: jsTs.identifierFromString("response"),
             document: "レスポンス",
             type: {
-              _: "ImportedType",
+              type: "ImportedType",
               importedType: {
                 moduleName: "express",
                 nameAndArguments: {
@@ -915,14 +945,14 @@ Deno.test("read me code", () => {
             },
           },
         ],
-        returnType: { _: "Void" },
+        returnType: { type: "Void" },
         statementList: [
           {
-            _: "VariableDefinition",
+            type: "VariableDefinition",
             variableDefinitionStatement: {
               isConst: true,
               name: jsTs.identifierFromString("accept"),
-              type: jsTs.typeUnion([{ _: "String" }, { _: "Undefined" }]),
+              type: jsTs.typeUnion([{ type: "String" }, { type: "Undefined" }]),
               expr: jsTs.get(
                 jsTs.get(
                   jsTs.variable(jsTs.identifierFromString("request")),
@@ -933,12 +963,12 @@ Deno.test("read me code", () => {
             },
           },
           {
-            _: "If",
+            type: "If",
             ifStatement: {
               condition: jsTs.logicalAnd(
                 jsTs.notEqual(
                   jsTs.variable(jsTs.identifierFromString("accept")),
-                  { _: "UndefinedLiteral" },
+                  { type: "UndefinedLiteral" },
                 ),
                 jsTs.callMethod(
                   jsTs.variable(jsTs.identifierFromString("accept")),
@@ -966,8 +996,16 @@ Deno.test("read me code", () => {
     statementList: [],
   };
   assertEquals(
-    jsTs.generateCodeAsString(serverCode, "TypeScript"),
-    `/* generated by https://jsr.io/@narumincho/js-ts-code-generator. Do not edit! */
+    jsTs.generateCodeAsString({
+      code: serverCode,
+      codeType: "TypeScript",
+    }),
+    `/** generated by
+ * - https://jsr.io/@narumincho/js-ts-code-generator@0.2.0
+ * Do not edit!
+ *
+ * @module
+*/
 
 import * as a from "express";
 

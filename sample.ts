@@ -27,7 +27,7 @@ const serverCode: data.JsTsCode = {
           name: identifierFromString("request"),
           document: "リクエスト",
           type: ({
-            _: "ImportedType",
+            type: "ImportedType",
             importedType: {
               moduleName: "express",
               nameAndArguments: {
@@ -41,7 +41,7 @@ const serverCode: data.JsTsCode = {
           name: identifierFromString("response"),
           document: "レスポンス",
           type: ({
-            _: "ImportedType",
+            type: "ImportedType",
             importedType: {
               moduleName: "express",
               nameAndArguments: {
@@ -52,12 +52,12 @@ const serverCode: data.JsTsCode = {
           }),
         },
       ],
-      returnType: { _: "Void" },
+      returnType: { type: "Void" },
       statementList: [
         statementVariableDefinition({
           isConst: true,
           name: identifierFromString("accept"),
-          type: typeUnion([{ _: "String" }, { _: "Undefined" }]),
+          type: typeUnion([{ type: "String" }, { type: "Undefined" }]),
           expr: get(
             get(
               variable(identifierFromString("request")),
@@ -70,7 +70,7 @@ const serverCode: data.JsTsCode = {
           condition: logicalAnd(
             notEqual(
               variable(identifierFromString("accept")),
-              { _: "UndefinedLiteral" },
+              { type: "UndefinedLiteral" },
             ),
             callMethod(
               variable(identifierFromString("accept")),

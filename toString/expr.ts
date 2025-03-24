@@ -21,7 +21,7 @@ export const exprToString = (
   indent: number,
   context: Context,
 ): string => {
-  switch (expr._) {
+  switch (expr.type) {
     case "NumberLiteral":
       return expr.int32.toString();
 
@@ -186,13 +186,13 @@ const objectLiteralToString = (
   "{ " +
   memberList
     .map((member) => {
-      switch (member._) {
+      switch (member.type) {
         case "Spread":
           return (
             "..." + exprToString(member.tsExpr, indent, context)
           );
         case "KeyValue": {
-          if (member.keyValue.key._ !== "StringLiteral") {
+          if (member.keyValue.key.type !== "StringLiteral") {
             return "[" + exprToString(
               member.keyValue.key,
               indent,
@@ -204,7 +204,7 @@ const objectLiteralToString = (
           const key = member.keyValue.key.string;
           if (
             isIdentifier(key) &&
-            member.keyValue.value._ === "Variable" &&
+            member.keyValue.value.type === "Variable" &&
             key === member.keyValue.value.tsIdentifier
           ) {
             return member.keyValue.key.string;
@@ -250,7 +250,7 @@ const exprToStringWithCombineStrength = (
 };
 
 const exprCombineStrength = (expr: d.TsExpr): number => {
-  switch (expr._) {
+  switch (expr.type) {
     case "NumberLiteral":
     case "StringLiteral":
     case "BooleanLiteral":
@@ -324,7 +324,7 @@ const binaryOperatorExprToString = (
   context: Context,
 ): string => {
   const operatorExprCombineStrength = exprCombineStrength({
-    _: "BinaryOperator",
+    type: "BinaryOperator",
     binaryOperatorExpr: binaryOperatorExpr,
   });
   const leftExprCombineStrength = exprCombineStrength(binaryOperatorExpr.left);
@@ -362,7 +362,7 @@ const conditionalOperatorToString = (
   context: Context,
 ): string => {
   const expr: d.TsExpr = {
-    _: "ConditionalOperator",
+    type: "ConditionalOperator",
     conditionalOperatorExpr: conditionalOperator,
   };
   return (
@@ -400,14 +400,14 @@ export const lambdaBodyToString = (
   context: Context,
 ): string => {
   const [firstStatement] = statementList;
-  if (firstStatement !== undefined && firstStatement._ === "Return") {
+  if (firstStatement !== undefined && firstStatement.type === "Return") {
     return exprToStringWithCombineStrength(
       {
-        _: "Lambda",
+        type: "Lambda",
         lambdaExpr: {
           typeParameterList: [],
           parameterList: [],
-          returnType: { _: "Void" },
+          returnType: { type: "Void" },
           statementList: [],
         },
       },
@@ -449,7 +449,9 @@ const indexAccessToString = (
   indent: number,
   context: Context,
 ): string => {
-  if (indexExpr._ === "StringLiteral" && isSafePropertyName(indexExpr.string)) {
+  if (
+    indexExpr.type === "StringLiteral" && isSafePropertyName(indexExpr.string)
+  ) {
     return "." + indexExpr.string;
   }
   return "[" + exprToString(indexExpr, indent, context) + "]";

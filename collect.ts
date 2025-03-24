@@ -206,7 +206,7 @@ const collectInExpr = (
   typeParameterSetList: ReadonlyArray<ReadonlySet<TsIdentifier>>,
   rootScopeIdentifierSet: RootScopeIdentifierSet,
 ): UsedNameAndModulePathSet => {
-  switch (expr._) {
+  switch (expr.type) {
     case "NumberLiteral":
     case "StringLiteral":
     case "BooleanLiteral":
@@ -275,7 +275,7 @@ const collectInExpr = (
 
     case "ObjectLiteral":
       return collectList(expr.tsMemberList, (member) => {
-        switch (member._) {
+        switch (member.type) {
           case "Spread":
             return collectInExpr(
               member.tsExpr,
@@ -474,7 +474,7 @@ const collectNameInStatement = (
 ): ReadonlySet<TsIdentifier> => {
   const identifierSet: Set<TsIdentifier> = new Set();
   for (const statement of statementList) {
-    switch (statement._) {
+    switch (statement.type) {
       case "VariableDefinition":
         identifierSet.add(statement.variableDefinitionStatement.name);
         break;
@@ -491,7 +491,7 @@ const collectInStatement = (
   typeParameterSetList: ReadonlyArray<ReadonlySet<TsIdentifier>>,
   rootScopeIdentifierSet: RootScopeIdentifierSet,
 ): UsedNameAndModulePathSet => {
-  switch (statement._) {
+  switch (statement.type) {
     case "EvaluateExpr":
       return collectInExpr(
         statement.tsExpr,
@@ -741,7 +741,7 @@ const collectInType = (
   rootScopeIdentifierSet: RootScopeIdentifierSet,
   typeParameterSetList: ReadonlyArray<ReadonlySet<TsIdentifier>>,
 ): UsedNameAndModulePathSet => {
-  switch (type_._) {
+  switch (type_.type) {
     case "Number":
     case "String":
     case "Boolean":
