@@ -11,21 +11,25 @@ export * from "./identifier.ts";
 export * from "./interface.ts";
 export * from "./data.ts";
 
+export type JsTsCodeToStringParameter = {
+  code: JsTsCode;
+  codeType: CodeType;
+  /**
+   * コード生成に使用したライブラリの名前やリンク
+   *
+   * 指定することによって, モジュールドキュメントに出力される
+   *
+   * @default {[]}
+   */
+  generatedByLinks?: ReadonlyArray<string>;
+};
+
 /**
  * コードを表現した {@link JsTsCode} からコードの文字列の表現に変換する
  */
-export function generateCodeAsString(
-  { code, codeType, generatedByLinks = [] }: {
-    code: JsTsCode;
-    codeType: CodeType;
-    /**
-     * コード生成に使用したライブラリの名前やリンク
-     *
-     * 指定することによって, モジュールドキュメントに出力される
-     */
-    generatedByLinks?: ReadonlyArray<string>;
-  },
-): string {
+export const generateCodeAsString = (
+  { code, codeType, generatedByLinks = [] }: JsTsCodeToStringParameter,
+): string => {
   // グローバル空間にある名前とimportしたモジュールのパスを集める
   const usedNameAndModulePath: UsedNameAndModulePathSet = collectInCode(code);
 
@@ -38,7 +42,7 @@ export function generateCodeAsString(
     },
     generatedByLinks,
   );
-}
+};
 
 /**
  * 使われている名前, モジュールのパスから, モジュールのパスとnamed importの識別子のMapを生成する
