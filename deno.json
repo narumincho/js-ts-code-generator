@@ -5,7 +5,8 @@
   "exports": {
     ".": "./mod.ts",
     "./statement": "./statement.ts",
-    "./type": "./type.ts"
+    "./type": "./type.ts",
+    "./expr": "./expr.ts"
   },
   "compilerOptions": {
     "noUncheckedIndexedAccess": true,
