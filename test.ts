@@ -7,6 +7,7 @@ import {
 } from "jsr:@std/assert";
 import * as jsTs from "./mod.ts";
 import * as statement from "./statement.ts";
+import * as type from "./type.ts";
 import { identifierFromString } from "./identifier.ts";
 
 const expressRequest: jsTs.TsType = {
@@ -205,7 +206,7 @@ Deno.test("include function parameter name", () => {
             type: "VariableDefinition",
             variableDefinitionStatement: {
               name: jsTs.identifierFromString("accept"),
-              type: jsTs.typeUnion([{ type: "String" }, { type: "Undefined" }]),
+              type: type.union([{ type: "String" }, { type: "Undefined" }]),
               isConst: true,
               expr: jsTs.get(
                 jsTs.get(
@@ -270,7 +271,7 @@ Deno.test("get array index", () => {
             {
               name: jsTs.identifierFromString("array"),
               document: "Uint8Array",
-              type: jsTs.uint8ArrayType,
+              type: type.Uint8Array,
             },
           ],
           returnType: { type: "Number" },
@@ -331,7 +332,7 @@ Deno.test("type parameter", () => {
           document: "",
           typeParameterList: [],
           parameterList: [],
-          returnType: jsTs.promiseType({ type: "String" }),
+          returnType: type.Promise({ type: "String" }),
           statementList: [],
         }),
       ],
@@ -411,7 +412,7 @@ Deno.test("object literal return need parenthesis", () => {
           document: "",
           typeParameterList: [],
           parameterList: [],
-          returnType: jsTs.typeObject([
+          returnType: type.object([
             {
               name: { type: "string", value: "name" },
               required: true,
@@ -538,8 +539,8 @@ Deno.test("switch", () => {
             { name: jsTs.identifierFromString("error") },
             { name: jsTs.identifierFromString("ok") },
           ],
-          type: jsTs.typeUnion([
-            jsTs.typeObject([
+          type: type.union([
+            type.object([
               {
                 name: { type: "string", value: "_" },
                 required: true,
@@ -549,13 +550,13 @@ Deno.test("switch", () => {
               {
                 name: { type: "string", value: "ok" },
                 required: true,
-                type: jsTs.typeScopeInFileNoArguments(
+                type: type.scopeInFile(
                   jsTs.identifierFromString("ok"),
                 ),
                 document: "",
               },
             ]),
-            jsTs.typeObject([
+            type.object([
               {
                 name: { type: "string", value: "_" },
                 required: true,
@@ -565,7 +566,7 @@ Deno.test("switch", () => {
               {
                 name: { type: "string", value: "error" },
                 required: true,
-                type: jsTs.typeScopeInFileNoArguments(
+                type: type.scopeInFile(
                   jsTs.identifierFromString("error"),
                 ),
                 document: "",
@@ -591,10 +592,10 @@ Deno.test("switch", () => {
               typeNameAndTypeParameter: {
                 name: jsTs.identifierFromString("Result"),
                 arguments: [
-                  jsTs.typeScopeInFileNoArguments(
+                  type.scopeInFile(
                     jsTs.identifierFromString("ok"),
                   ),
-                  jsTs.typeScopeInFileNoArguments(
+                  type.scopeInFile(
                     jsTs.identifierFromString("error"),
                   ),
                 ],
@@ -666,7 +667,7 @@ Deno.test("Type Assertion", () => {
         type: "TypeAssertion",
         typeAssertion: {
           expr: jsTs.objectLiteral([]),
-          type: jsTs.dateType,
+          type: type.Date,
         },
       }),
     ],
@@ -692,8 +693,8 @@ Deno.test("Type Intersection", () => {
           type: {
             type: "Intersection",
             intersectionType: {
-              left: jsTs.dateType,
-              right: jsTs.uint8ArrayType,
+              left: type.Date,
+              right: type.Uint8Array,
             },
           },
         },
@@ -718,7 +719,7 @@ Deno.test("object literal spread syntax", () => {
         variableDefinitionStatement: {
           name: jsTs.identifierFromString("value"),
           isConst: true,
-          type: jsTs.typeObject([
+          type: type.object([
             {
               name: { type: "string", value: "a" },
               required: true,
@@ -767,7 +768,7 @@ Deno.test("type property document", () => {
           document: "初期のdefinyで使う時間の内部表現",
           namespace: [],
           typeParameterList: [],
-          type: jsTs.typeObject([
+          type: type.object([
             {
               name: { type: "string", value: "day" },
               required: true,
@@ -809,14 +810,14 @@ Deno.test("output lambda type parameter", () => {
             functionType: {
               typeParameterList: [{ name: typeParameterIdentifier }],
               parameterList: [
-                jsTs.typeScopeInFileNoArguments(typeParameterIdentifier),
+                type.scopeInFile(typeParameterIdentifier),
               ],
-              return: jsTs.typeObject([
+              return: type.object([
                 {
                   name: { type: "string", value: "value" },
                   required: true,
                   document: "",
-                  type: jsTs.typeScopeInFileNoArguments(
+                  type: type.scopeInFile(
                     typeParameterIdentifier,
                   ),
                 },
@@ -844,18 +845,18 @@ Deno.test("output lambda type parameter", () => {
               parameterList: [
                 {
                   name: jsTs.identifierFromString("input"),
-                  type: jsTs.typeScopeInFileNoArguments(
+                  type: type.scopeInFile(
                     typeParameterIdentifier,
                   ),
                 },
               ],
               typeParameterList: [{ name: typeParameterIdentifier }],
-              returnType: jsTs.typeObject([
+              returnType: type.object([
                 {
                   name: { type: "string", value: "value" },
                   required: true,
                   document: "",
-                  type: jsTs.typeScopeInFileNoArguments(
+                  type: type.scopeInFile(
                     typeParameterIdentifier,
                   ),
                 },
@@ -895,7 +896,7 @@ Deno.test("output optional type member", () => {
         variable: {
           name: jsTs.identifierFromString("value"),
           document: "年齢があってもなくてもいいやつ",
-          type: jsTs.typeObject([
+          type: type.object([
             {
               name: { type: "string", value: "name" },
               required: true,
@@ -970,7 +971,7 @@ Deno.test("read me code", () => {
             variableDefinitionStatement: {
               isConst: true,
               name: jsTs.identifierFromString("accept"),
-              type: jsTs.typeUnion([{ type: "String" }, { type: "Undefined" }]),
+              type: type.union([{ type: "String" }, { type: "Undefined" }]),
               expr: jsTs.get(
                 jsTs.get(
                   jsTs.variable(jsTs.identifierFromString("request")),
