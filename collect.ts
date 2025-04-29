@@ -12,8 +12,6 @@ export type UsedNameAndModulePathSet = {
 
 /**
  * グローバル空間とルートにある関数名の引数名、使っている外部モジュールのパスを集める
- * コードのエラーもチェックする
- * @throws コードにエラーが見つかった
  */
 export const collectInCode = (code: d.Module): UsedNameAndModulePathSet => {
   const rootScopeIdentifierSet = collectRootScopeIdentifier(
@@ -42,7 +40,6 @@ type RootScopeIdentifierSet = {
 
 /**
  * 定義の名前を収集する
- * @throws 同名の定義があった場合
  */
 const collectRootScopeIdentifier = (
   definitionList: ReadonlyArray<d.Definition>,
@@ -52,29 +49,14 @@ const collectRootScopeIdentifier = (
   for (const definition of definitionList) {
     switch (definition.type) {
       case "typeAlias":
-        if (typeNameSet.has(definition.typeAlias.name)) {
-          throw new Error(
-            "Duplicate typeAlias name. name=" + definition.typeAlias.name,
-          );
-        }
         typeNameSet.add(definition.typeAlias.name);
         break;
 
       case "function":
-        if (variableNameSet.has(definition.function.name)) {
-          throw new Error(
-            "Duplicate export function name. name=" + definition.function.name,
-          );
-        }
         variableNameSet.add(definition.function.name);
         break;
 
       case "variable":
-        if (variableNameSet.has(definition.variable.name)) {
-          throw new Error(
-            "Duplicate export variable name. name=" + definition.variable.name,
-          );
-        }
         variableNameSet.add(definition.variable.name);
     }
   }
@@ -138,12 +120,10 @@ const collectInFunctionDefinition = (
   function_: d.Function,
   rootScopeIdentifierSet: RootScopeIdentifierSet,
 ): UsedNameAndModulePathSet => {
-  const parameterNameSet = checkDuplicateIdentifier(
-    "export function parameter name",
+  const parameterNameSet = new Set(
     function_.parameterList.map((parameter) => parameter.name),
   );
-  const typeParameterNameSet = checkDuplicateIdentifier(
-    "export function type parameter name",
+  const typeParameterNameSet = new Set(
     function_.typeParameterList.map((e) => e.name),
   );
   return concatCollectData(
@@ -302,13 +282,11 @@ const collectInExpr = (
       });
 
     case "Lambda": {
-      const parameterNameSet = checkDuplicateIdentifier(
-        "lambda parameter name",
+      const parameterNameSet = new Set(
         expr.lambdaExpr.parameterList.map((parameter) => parameter.name),
       );
       const newTypeParameterSetList = typeParameterSetList.concat(
-        checkDuplicateIdentifier(
-          "lambda type parameter name",
+        new Set(
           expr.lambdaExpr.typeParameterList.map((e) => e.name),
         ),
       );
@@ -347,11 +325,6 @@ const collectInExpr = (
     }
 
     case "Variable":
-      checkVariableIsDefinedOrThrow(
-        localVariableNameSetList,
-        rootScopeIdentifierSet.rootScopeVariableName,
-        expr.tsIdentifier,
-      );
       return {
         modulePathSet: new Set(),
         usedNameSet: new Set(),
@@ -580,15 +553,13 @@ const collectInStatement = (
       );
 
     case "FunctionDefinition": {
-      const parameterNameSet = checkDuplicateIdentifier(
-        "local function parameter name",
+      const parameterNameSet = new Set(
         statement.functionDefinitionStatement.parameterList.map(
           (parameter) => parameter.name,
         ),
       );
       const newTypeParameterSetList = typeParameterSetList.concat(
-        checkDuplicateIdentifier(
-          "local function type parameter name",
+        new Set(
           statement.functionDefinitionStatement.typeParameterList.map((e) =>
             e.name
           ),
@@ -709,37 +680,6 @@ const collectInStatement = (
   }
 };
 
-const checkVariableIsDefinedOrThrow = (
-  localVariableNameSetList: ReadonlyArray<ReadonlySet<TsIdentifier>>,
-  rootScopeNameSet: ReadonlySet<TsIdentifier>,
-  variableName: TsIdentifier,
-): void => {
-  const reversedLocalVariableNameSetList = [
-    ...localVariableNameSetList,
-  ].reverse();
-  for (const localVariableNameSet of reversedLocalVariableNameSetList) {
-    if (localVariableNameSet.has(variableName)) {
-      return;
-    }
-  }
-  if (rootScopeNameSet.has(variableName)) {
-    return;
-  }
-  console.warn(
-    "存在しない変数を指定されました name=" +
-      variableName +
-      " スコープ内に存在している変数 =[ " +
-      localVariableNameSetList
-        .map((scope) => "[" + [...scope].join(",") + "]")
-        .join(",") +
-      " ]" +
-      "ファイルの直下に存在している変数 =" +
-      "[" +
-      [...rootScopeNameSet].join(",") +
-      "]",
-  );
-};
-
 /**
  * グローバル空間(グローバル変数、直下の関数の引数名)に出ている型の名前を集める
  * @param type_ 型の式
@@ -777,10 +717,7 @@ const collectInType = (
 
     case "Function": {
       const newTypeParameterSetList = typeParameterSetList.concat(
-        checkDuplicateIdentifier(
-          "function type, type parameter",
-          type_.functionType.typeParameterList.map((e) => e.name),
-        ),
+        new Set(type_.functionType.typeParameterList.map((e) => e.name)),
       );
       return concatCollectData(
         collectList(
@@ -930,23 +867,4 @@ const collectList = <Element>(
     modulePathSet,
     usedNameSet,
   };
-};
-
-/**
- * 識別子の重複を調べる
- * @param name エラーメッセージに使う.何の識別子を表すか
- * @param identifierList 識別子のリスト
- */
-const checkDuplicateIdentifier = (
-  name: string,
-  identifierList: ReadonlyArray<TsIdentifier>,
-): ReadonlySet<TsIdentifier> => {
-  const set: Set<TsIdentifier> = new Set();
-  for (const identifier of identifierList) {
-    if (set.has(identifier)) {
-      throw new Error("Duplicate " + name + ". name = " + identifier);
-    }
-    set.add(identifier);
-  }
-  return set;
 };
