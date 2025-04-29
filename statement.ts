@@ -1,6 +1,14 @@
 // c:\Users\narum\Documents\GitHub\js-ts-code-generator\statement.ts
-import type * as d from "./data.ts";
-import * as identifier from "./identifier.ts";
+import type {
+  ForOfStatement,
+  ForStatement,
+  IfStatement,
+  SetStatement,
+  Statement,
+  TsExpr,
+  VariableDefinitionStatement,
+} from "./data.ts";
+import { identifierFromString } from "./identifier.ts";
 import { callMethod } from "./interface.ts";
 
 /**
@@ -9,12 +17,12 @@ import { callMethod } from "./interface.ts";
  * ```
  * @param expr 出力する式
  */
-export const consoleLog = (expr: d.TsExpr): d.Statement => ({
+export const consoleLog = (expr: TsExpr): Statement => ({
   type: "EvaluateExpr",
   tsExpr: callMethod(
     {
       type: "GlobalObjects",
-      tsIdentifier: identifier.identifierFromString("console"),
+      tsIdentifier: identifierFromString("console"),
     },
     "log",
     [expr],
@@ -25,7 +33,7 @@ export const consoleLog = (expr: d.TsExpr): d.Statement => ({
  * return 文 `return expr;`
  * @param expr 返す式
  */
-const statementReturn = (expr: d.TsExpr): d.Statement => ({
+const statementReturn = (expr: TsExpr): Statement => ({
   type: "Return",
   tsExpr: expr,
 });
@@ -36,7 +44,7 @@ export { statementReturn as return };
  * 式の評価文 `expr;`
  * @param expr 評価する式
  */
-export const evaluateExpr = (expr: d.TsExpr): d.Statement => ({
+export const evaluateExpr = (expr: TsExpr): Statement => ({
   type: "EvaluateExpr",
   tsExpr: expr,
 });
@@ -45,7 +53,7 @@ export const evaluateExpr = (expr: d.TsExpr): d.Statement => ({
  * if 文
  * @param ifStatement if 文のデータ
  */
-const statementIf = (ifStatement: d.IfStatement): d.Statement => ({
+const statementIf = (ifStatement: IfStatement): Statement => ({
   type: "If",
   ifStatement,
 });
@@ -57,8 +65,8 @@ export { statementIf as if };
  * @param variableDefinitionStatement 変数定義文のデータ
  */
 export const variableDefinition = (
-  variableDefinitionStatement: d.VariableDefinitionStatement,
-): d.Statement => ({
+  variableDefinitionStatement: VariableDefinitionStatement,
+): Statement => ({
   type: "VariableDefinition",
   variableDefinitionStatement,
 });
@@ -67,7 +75,7 @@ export const variableDefinition = (
  * for 文 `for (let i = 0; i < count; ++i) { ... }`
  * @param forStatement for 文のデータ
  */
-const statementFor = (forStatement: d.ForStatement): d.Statement => ({
+const statementFor = (forStatement: ForStatement): Statement => ({
   type: "For",
   forStatement,
 });
@@ -79,8 +87,8 @@ export { statementFor as for };
  * @param forOfStatement for-of 文のデータ
  */
 export const forOf = (
-  forOfStatement: d.ForOfStatement,
-): d.Statement => ({
+  forOfStatement: ForOfStatement,
+): Statement => ({
   type: "ForOf",
   forOfStatement,
 });
@@ -89,7 +97,7 @@ export const forOf = (
  * 代入文 `target = expr;`
  * @param setStatement 代入文のデータ
  */
-export const set = (setStatement: d.SetStatement): d.Statement => ({
+export const set = (setStatement: SetStatement): Statement => ({
   type: "Set",
   setStatement,
 });
