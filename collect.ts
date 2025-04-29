@@ -15,14 +15,14 @@ export type UsedNameAndModulePathSet = {
  * コードのエラーもチェックする
  * @throws コードにエラーが見つかった
  */
-export const collectInCode = (code: d.JsTsCode): UsedNameAndModulePathSet => {
+export const collectInCode = (code: d.Module): UsedNameAndModulePathSet => {
   const rootScopeIdentifierSet = collectRootScopeIdentifier(
-    code.exportDefinitionList,
+    code.definitionList,
   );
 
   return concatCollectData(
     collectList(
-      code.exportDefinitionList,
+      code.definitionList,
       (definition) => collectInDefinition(definition, rootScopeIdentifierSet),
     ),
     collectStatementList(
@@ -45,7 +45,7 @@ type RootScopeIdentifierSet = {
  * @throws 同名の定義があった場合
  */
 const collectRootScopeIdentifier = (
-  definitionList: ReadonlyArray<d.ExportDefinition>,
+  definitionList: ReadonlyArray<d.Definition>,
 ): RootScopeIdentifierSet => {
   const typeNameSet: Set<TsIdentifier> = new Set();
   const variableNameSet: Set<TsIdentifier> = new Set();
@@ -85,7 +85,7 @@ const collectRootScopeIdentifier = (
 };
 
 const collectInDefinition = (
-  definition: d.ExportDefinition,
+  definition: d.Definition,
   rootScopeIdentifierSet: RootScopeIdentifierSet,
 ): UsedNameAndModulePathSet => {
   switch (definition.type) {

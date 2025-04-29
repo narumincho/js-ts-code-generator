@@ -730,7 +730,7 @@ export const stringLiteral = (string: string): d.TsExpr => ({
 
 export const exportDefinitionFunction = (
   func: d.Function,
-): d.ExportDefinition => ({ type: "function", function: func });
+): d.Definition => ({ type: "function", function: func });
 
 export const typeUnion = (tsTypeList: ReadonlyArray<d.TsType>): d.TsType => ({
   type: "Union",

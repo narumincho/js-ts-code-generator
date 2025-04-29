@@ -5,13 +5,13 @@ import {
 } from "./identifier.ts";
 import { collectInCode, type UsedNameAndModulePathSet } from "./collect.ts";
 import { toString } from "./toString.ts";
-import type { CodeType, JsTsCode } from "./data.ts";
+import type { CodeType, Module } from "./data.ts";
 export * from "./identifier.ts";
 export * from "./interface.ts";
 export * from "./data.ts";
 
 export type JsTsCodeToStringParameter = {
-  code: JsTsCode;
+  code: Module;
   codeType: CodeType;
   /**
    * コード生成に使用したライブラリの名前やリンク
@@ -24,7 +24,7 @@ export type JsTsCodeToStringParameter = {
 };
 
 /**
- * コードを表現した {@link JsTsCode} からコードの文字列の表現に変換する
+ * コードを表現した {@link Module} からコードの文字列の表現に変換する
  */
 export const generateCodeAsString = (
   { code, codeType, generatedByLinks = [] }: JsTsCodeToStringParameter,

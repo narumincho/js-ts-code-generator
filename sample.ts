@@ -1,11 +1,11 @@
 import {
   callMethod,
-  type data,
   exportDefinitionFunction,
   generateCodeAsString,
   get,
   identifierFromString,
   logicalAnd,
+  type Module,
   notEqual,
   statementEvaluateExpr,
   statementIf,
@@ -15,8 +15,8 @@ import {
   variable,
 } from "./mod.ts";
 
-const serverCode: data.JsTsCode = {
-  exportDefinitionList: [
+const serverModule: Module = {
+  definitionList: [
     exportDefinitionFunction({
       isAsync: false,
       name: identifierFromString("middleware"),
@@ -96,5 +96,8 @@ const serverCode: data.JsTsCode = {
   ],
   statementList: [],
 };
-const codeAsString = generateCodeAsString(serverCode, "TypeScript");
+const codeAsString = generateCodeAsString({
+  code: serverModule,
+  codeType: "TypeScript",
+});
 console.log(codeAsString);

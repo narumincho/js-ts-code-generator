@@ -27,8 +27,8 @@ const expressResponse: jsTs.TsType = {
   },
 };
 
-const sampleCode: jsTs.JsTsCode = {
-  exportDefinitionList: [
+const sampleCode: jsTs.Module = {
+  definitionList: [
     jsTs.exportDefinitionFunction({
       isAsync: false,
       name: jsTs.identifierFromString("middleware"),
@@ -72,7 +72,7 @@ Deno.test("include import path", () => {
 Deno.test("not include revered word", () => {
   const codeAsString = jsTs.generateCodeAsString({
     code: {
-      exportDefinitionList: [
+      definitionList: [
         jsTs.exportDefinitionFunction({
           isAsync: false,
           name: jsTs.identifierFromString("new"),
@@ -95,7 +95,7 @@ Deno.test("not include revered word", () => {
 Deno.test("識別子として使えない文字は, 変更される", () => {
   const codeAsString = jsTs.generateCodeAsString({
     code: {
-      exportDefinitionList: [
+      definitionList: [
         jsTs.exportDefinitionFunction({
           isAsync: false,
           name: jsTs.identifierFromString("0name"),
@@ -128,8 +128,8 @@ Deno.test("識別子の生成で識別子に使えない文字が含まれてい
   }
 });
 Deno.test("escape string literal", () => {
-  const nodeJsCode: jsTs.JsTsCode = {
-    exportDefinitionList: [
+  const nodeJsCode: jsTs.Module = {
+    definitionList: [
       {
         type: "variable",
         variable: {
@@ -156,8 +156,8 @@ Deno.test("escape string literal", () => {
 });
 
 Deno.test("include function parameter name", () => {
-  const nodeJsCode: jsTs.JsTsCode = {
-    exportDefinitionList: [
+  const nodeJsCode: jsTs.Module = {
+    definitionList: [
       jsTs.exportDefinitionFunction({
         isAsync: false,
         name: jsTs.identifierFromString("middleware"),
@@ -253,7 +253,7 @@ Deno.test("include function parameter name", () => {
 Deno.test("get array index", () => {
   const code = jsTs.generateCodeAsString({
     code: {
-      exportDefinitionList: [
+      definitionList: [
         jsTs.exportDefinitionFunction({
           isAsync: false,
           name: jsTs.identifierFromString("getZeroIndexElement"),
@@ -287,7 +287,7 @@ Deno.test("get array index", () => {
 });
 const scopedCode = jsTs.generateCodeAsString({
   code: {
-    exportDefinitionList: [],
+    definitionList: [],
     statementList: [
       {
         type: "VariableDefinition",
@@ -314,7 +314,7 @@ Deno.test("ESModules Browser Code not include type ", () => {
 Deno.test("type parameter", () => {
   const code = jsTs.generateCodeAsString({
     code: {
-      exportDefinitionList: [
+      definitionList: [
         jsTs.exportDefinitionFunction({
           isAsync: false,
           name: jsTs.identifierFromString("sample"),
@@ -335,7 +335,7 @@ Deno.test("type parameter", () => {
 Deno.test("object literal key is escaped", () => {
   const code = jsTs.generateCodeAsString({
     code: {
-      exportDefinitionList: [],
+      definitionList: [],
       statementList: [
         jsTs.statementEvaluateExpr(
           jsTs.objectLiteral([
@@ -353,7 +353,7 @@ Deno.test("object literal key is escaped", () => {
 Deno.test("binary operator combine", () => {
   const code = jsTs.generateCodeAsString({
     code: {
-      exportDefinitionList: [],
+      definitionList: [],
       statementList: [
         jsTs.statementEvaluateExpr(
           jsTs.equal(
@@ -391,7 +391,7 @@ Deno.test("binary operator combine", () => {
 Deno.test("object literal return need parenthesis", () => {
   const code = jsTs.generateCodeAsString({
     code: {
-      exportDefinitionList: [
+      definitionList: [
         jsTs.exportDefinitionFunction({
           isAsync: false,
           name: jsTs.identifierFromString("returnObject"),
@@ -433,7 +433,7 @@ Deno.test("let variable", () => {
   const v = jsTs.identifierFromString("v");
   const code = jsTs.generateCodeAsString({
     code: {
-      exportDefinitionList: [],
+      definitionList: [],
       statementList: [
         {
           type: "VariableDefinition",
@@ -468,8 +468,8 @@ Deno.test("let variable", () => {
   assertMatch(code, /let v: number = 10;[\n ]*v = 30;[\n ]*v \+= 1;/u);
 });
 Deno.test("for of", () => {
-  const code: jsTs.JsTsCode = {
-    exportDefinitionList: [],
+  const code: jsTs.Module = {
+    definitionList: [],
     statementList: [
       {
         type: "ForOf",
@@ -510,8 +510,8 @@ Deno.test("for of", () => {
   assertMatch(codeAsString, /for .* of \[1, 2, \.\.\.\[3, 4, 5\] *\]/u);
 });
 Deno.test("switch", () => {
-  const code: jsTs.JsTsCode = {
-    exportDefinitionList: [
+  const code: jsTs.Module = {
+    definitionList: [
       {
         type: "typeAlias",
         typeAlias: {
@@ -642,8 +642,8 @@ Deno.test("switch", () => {
   assertMatch(codeAsString, /switch \(.+\) \{\n +case .+:/u);
 });
 Deno.test("Type Assertion", () => {
-  const code: jsTs.JsTsCode = {
-    exportDefinitionList: [],
+  const code: jsTs.Module = {
+    definitionList: [],
     statementList: [
       jsTs.statementEvaluateExpr({
         type: "TypeAssertion",
@@ -662,8 +662,8 @@ Deno.test("Type Assertion", () => {
   assertMatch(codeAsString, /as globalThis.Date/u);
 });
 Deno.test("Type Intersection", () => {
-  const code: jsTs.JsTsCode = {
-    exportDefinitionList: [
+  const code: jsTs.Module = {
+    definitionList: [
       {
         type: "typeAlias",
         typeAlias: {
@@ -692,8 +692,8 @@ Deno.test("Type Intersection", () => {
 });
 
 Deno.test("object literal spread syntax", () => {
-  const code: jsTs.JsTsCode = {
-    exportDefinitionList: [],
+  const code: jsTs.Module = {
+    definitionList: [],
     statementList: [
       {
         type: "VariableDefinition",
@@ -740,8 +740,8 @@ Deno.test("object literal spread syntax", () => {
 });
 
 Deno.test("type property document", () => {
-  const code: jsTs.JsTsCode = {
-    exportDefinitionList: [
+  const code: jsTs.Module = {
+    definitionList: [
       {
         type: "typeAlias",
         typeAlias: {
@@ -778,8 +778,8 @@ Deno.test("type property document", () => {
 
 Deno.test("output lambda type parameter", () => {
   const typeParameterIdentifier = jsTs.identifierFromString("t");
-  const code: jsTs.JsTsCode = {
-    exportDefinitionList: [],
+  const code: jsTs.Module = {
+    definitionList: [],
     statementList: [
       {
         type: "VariableDefinition",
@@ -870,8 +870,8 @@ Deno.test("output lambda type parameter", () => {
 });
 
 Deno.test("output optional type member", () => {
-  const code: jsTs.JsTsCode = {
-    exportDefinitionList: [
+  const code: jsTs.Module = {
+    definitionList: [
       {
         type: "variable",
         variable: {
@@ -908,8 +908,8 @@ Deno.test("output optional type member", () => {
 });
 
 Deno.test("read me code", () => {
-  const serverCode: jsTs.JsTsCode = {
-    exportDefinitionList: [
+  const serverCode: jsTs.Module = {
+    definitionList: [
       jsTs.exportDefinitionFunction({
         isAsync: false,
         name: jsTs.identifierFromString("middleware"),

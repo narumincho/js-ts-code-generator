@@ -13,7 +13,7 @@ import denoJson from "./deno.json" with { type: "json" };
  * コードを文字列にする
  */
 export const toString = (
-  code: d.JsTsCode,
+  code: d.Module,
   context: Context,
   /**
    * コード生成に使用したライブラリの名前やリンク
@@ -43,7 +43,7 @@ ${
       .join("\n") +
     "\n";
 
-  const definitionCode = code.exportDefinitionList
+  const definitionCode = code.definitionList
     .map((definition) => definitionToString(definition, context))
     .join("") + "\n";
 
@@ -60,7 +60,7 @@ ${
 };
 
 const definitionToString = (
-  definition: d.ExportDefinition,
+  definition: d.Definition,
   context: Context,
 ): string => {
   switch (definition.type) {
