@@ -1,4 +1,3 @@
-// c:\Users\narum\Documents\GitHub\js-ts-code-generator\test.ts
 import {
   assert,
   assertEquals,
@@ -8,6 +7,7 @@ import {
 import * as jsTs from "./mod.ts";
 import * as statement from "./statement.ts";
 import * as type from "./type.ts";
+import * as expr from "./expr.ts";
 import { identifierFromString } from "./identifier.ts";
 
 const expressRequest: jsTs.TsType = {

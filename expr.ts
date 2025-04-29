@@ -1,4 +1,3 @@
-// c:\Users\narum\Documents\GitHub\js-ts-code-generator\interface.ts
 import type * as d from "./data.ts";
 import * as identifier from "./identifier.ts";
 
@@ -557,10 +556,6 @@ export const stringLiteral = (string: string): d.TsExpr => ({
   type: "StringLiteral",
   string,
 });
-
-export const exportDefinitionFunction = (
-  func: d.Function,
-): d.Definition => ({ type: "function", function: func });
 
 export const call = (
   expr: d.TsExpr,
