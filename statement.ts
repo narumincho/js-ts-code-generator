@@ -9,7 +9,7 @@ import type {
   VariableDefinitionStatement,
 } from "./data.ts";
 import { identifierFromString } from "./identifier.ts";
-import { callMethod } from "./interface.ts";
+import { callMethod } from "./expr.ts";
 
 /**
  * ```ts

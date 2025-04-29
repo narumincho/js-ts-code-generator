@@ -1,17 +1,12 @@
 import {
-  callMethod,
   exportDefinitionFunction,
   generateCodeAsString,
-  get,
   identifierFromString,
-  logicalAnd,
   type Module,
-  notEqual,
-  stringLiteral,
-  variable,
 } from "./mod.ts";
 import * as statement from "./statement.ts";
 import * as type from "./type.ts";
+import * as expr from "./expr.ts";
 
 const serverModule: Module = {
   definitionList: [
@@ -56,34 +51,34 @@ const serverModule: Module = {
           isConst: true,
           name: identifierFromString("accept"),
           type: type.union([{ type: "String" }, { type: "Undefined" }]),
-          expr: get(
-            get(
-              variable(identifierFromString("request")),
+          expr: expr.get(
+            expr.get(
+              expr.variable(identifierFromString("request")),
               "headers",
             ),
             "accept",
           ),
         }),
         statement.if({
-          condition: logicalAnd(
-            notEqual(
-              variable(identifierFromString("accept")),
+          condition: expr.logicalAnd(
+            expr.notEqual(
+              expr.variable(identifierFromString("accept")),
               { type: "UndefinedLiteral" },
             ),
-            callMethod(
-              variable(identifierFromString("accept")),
+            expr.callMethod(
+              expr.variable(identifierFromString("accept")),
               "includes",
-              [stringLiteral("text/html")],
+              [expr.stringLiteral("text/html")],
             ),
           ),
           thenStatementList: [
             statement.evaluateExpr(
-              callMethod(
-                variable(identifierFromString("response")),
+              expr.callMethod(
+                expr.variable(identifierFromString("response")),
                 "setHeader",
                 [
-                  stringLiteral("content-type"),
-                  stringLiteral("text/html"),
+                  expr.stringLiteral("content-type"),
+                  expr.stringLiteral("text/html"),
                 ],
               ),
             ),

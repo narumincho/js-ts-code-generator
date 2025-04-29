@@ -5,9 +5,15 @@ import {
 } from "./identifier.ts";
 import { collectInCode, type UsedNameAndModulePathSet } from "./collect.ts";
 import { toString } from "./toString.ts";
-import type { CodeType, Module } from "./data.ts";
+import type {
+  CodeType,
+  Definition,
+  Function,
+  Module,
+  TypeAlias,
+  Variable,
+} from "./data.ts";
 export * from "./identifier.ts";
-export * from "./interface.ts";
 export * from "./data.ts";
 
 export type JsTsCodeToStringParameter = {
@@ -65,3 +71,15 @@ const createImportedModuleName = (
   }
   return importedModuleNameMap;
 };
+
+export const exportDefinitionFunction = (
+  func: Function,
+): Definition => ({ type: "function", function: func });
+
+export const exportDefinitionTypeAlias = (
+  typeAlias: TypeAlias,
+): Definition => ({ type: "typeAlias", typeAlias });
+
+export const exportDefinitionVariable = (
+  variable: Variable,
+): Definition => ({ type: "variable", variable });
