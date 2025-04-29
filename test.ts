@@ -1,3 +1,4 @@
+// c:\Users\narum\Documents\GitHub\js-ts-code-generator\test.ts
 import {
   assert,
   assertEquals,
@@ -5,6 +6,7 @@ import {
   assertNotMatch,
 } from "jsr:@std/assert";
 import * as jsTs from "./mod.ts";
+import * as statement from "./statement.ts";
 import { identifierFromString } from "./identifier.ts";
 
 const expressRequest: jsTs.TsType = {
@@ -229,7 +231,7 @@ Deno.test("include function parameter name", () => {
                 ),
               ),
               thenStatementList: [
-                jsTs.statementEvaluateExpr(
+                statement.evaluateExpr(
                   jsTs.callMethod(
                     jsTs.variable(jsTs.identifierFromString("response")),
                     "setHeader",
@@ -273,7 +275,7 @@ Deno.test("get array index", () => {
           ],
           returnType: { type: "Number" },
           statementList: [
-            jsTs.statementReturn({
+            statement.return({
               type: "Get",
               getExpr: {
                 expr: jsTs.variable(jsTs.identifierFromString("array")),
@@ -304,7 +306,7 @@ const scopedCode = jsTs.generateCodeAsString({
           expr: jsTs.stringLiteral("それな"),
         },
       },
-      jsTs.consoleLog(jsTs.variable(jsTs.identifierFromString("sorena"))),
+      statement.consoleLog(jsTs.variable(jsTs.identifierFromString("sorena"))),
     ],
   },
   codeType: "JavaScript",
@@ -346,7 +348,7 @@ Deno.test("object literal key is escaped", () => {
     code: {
       definitionList: [],
       statementList: [
-        jsTs.statementEvaluateExpr(
+        statement.evaluateExpr(
           jsTs.objectLiteral([
             jsTs.memberKeyValue("abc", jsTs.numberLiteral(3)),
             jsTs.memberKeyValue("a b c", jsTs.stringLiteral("separated")),
@@ -365,7 +367,7 @@ Deno.test("binary operator combine", () => {
     code: {
       definitionList: [],
       statementList: [
-        jsTs.statementEvaluateExpr(
+        statement.evaluateExpr(
           jsTs.equal(
             jsTs.equal(
               jsTs.addition(
@@ -424,7 +426,7 @@ Deno.test("object literal return need parenthesis", () => {
             },
           ]),
           statementList: [
-            jsTs.statementReturn(
+            statement.return(
               jsTs.objectLiteral([
                 jsTs.memberKeyValue("name", jsTs.stringLiteral("mac")),
                 jsTs.memberKeyValue("age", jsTs.numberLiteral(10)),
@@ -507,7 +509,7 @@ Deno.test("for of", () => {
             ],
           },
           statementList: [
-            jsTs.consoleLog(
+            statement.consoleLog(
               jsTs.variable(jsTs.identifierFromString("element")),
             ),
           ],
@@ -613,7 +615,7 @@ Deno.test("switch", () => {
                 {
                   caseString: "Ok",
                   statementList: [
-                    jsTs.statementReturn(
+                    statement.return(
                       jsTs.callMethod(
                         jsTs.get(
                           jsTs.variable(jsTs.identifierFromString("value")),
@@ -628,7 +630,7 @@ Deno.test("switch", () => {
                 {
                   caseString: "Error",
                   statementList: [
-                    jsTs.statementReturn(
+                    statement.return(
                       jsTs.callMethod(
                         jsTs.get(
                           jsTs.variable(jsTs.identifierFromString("value")),
@@ -660,7 +662,7 @@ Deno.test("Type Assertion", () => {
   const code: jsTs.Module = {
     definitionList: [],
     statementList: [
-      jsTs.statementEvaluateExpr({
+      statement.evaluateExpr({
         type: "TypeAssertion",
         typeAssertion: {
           expr: jsTs.objectLiteral([]),
@@ -736,7 +738,7 @@ Deno.test("object literal spread syntax", () => {
           ]),
         },
       },
-      jsTs.consoleLog(
+      statement.consoleLog(
         jsTs.objectLiteral([
           {
             type: "Spread",
@@ -859,7 +861,7 @@ Deno.test("output lambda type parameter", () => {
                 },
               ]),
               statementList: [
-                jsTs.statementReturn(
+                statement.return(
                   jsTs.objectLiteral([
                     jsTs.memberKeyValue(
                       "value",
@@ -993,7 +995,7 @@ Deno.test("read me code", () => {
                 ),
               ),
               thenStatementList: [
-                jsTs.statementEvaluateExpr(
+                statement.evaluateExpr(
                   jsTs.callMethod(
                     jsTs.variable(jsTs.identifierFromString("response")),
                     "setHeader",

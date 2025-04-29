@@ -113,7 +113,7 @@ export const typeofExpr = (expr: d.TsExpr): d.TsExpr => ({
 export const exponentiation = (left: d.TsExpr, right: d.TsExpr): d.TsExpr => ({
   type: "BinaryOperator",
   binaryOperatorExpr: {
-    operator: "Multiplication",
+    operator: "Exponentiation",
     left,
     right,
   },
@@ -497,22 +497,6 @@ export const newSet = (initValueList: d.TsExpr): d.TsExpr => ({
 });
 
 /**
- * ```ts
- * console.log(expr)
- * ```
- */
-export const consoleLog = (expr: d.TsExpr): d.Statement => ({
-  type: "EvaluateExpr",
-  tsExpr: callMethod(
-    {
-      type: "GlobalObjects",
-      tsIdentifier: identifier.identifierFromString("console"),
-    },
-    "log",
-    [expr],
-  ),
-});
-/**
  * `Array<elementType>`
  */
 export const arrayType = (elementType: d.TsType): d.TsType => ({
@@ -686,16 +670,6 @@ export const typeScopeInFileNoArguments = (
   },
 });
 
-export const statementReturn = (expr: d.TsExpr): d.Statement => ({
-  type: "Return",
-  tsExpr: expr,
-});
-
-export const statementEvaluateExpr = (expr: d.TsExpr): d.Statement => ({
-  type: "EvaluateExpr",
-  tsExpr: expr,
-});
-
 export const newTextDecoder: d.TsExpr = {
   type: "New",
   callExpr: {
@@ -752,30 +726,6 @@ export const call = (
   callExpr: { expr, parameterList },
 });
 
-export const statementIf = (ifStatement: d.IfStatement): d.Statement => ({
-  type: "If",
-  ifStatement,
-});
-
-export const statementVariableDefinition = (
-  variableDefinitionStatement: d.VariableDefinitionStatement,
-): d.Statement => ({
-  type: "VariableDefinition",
-  variableDefinitionStatement,
-});
-
-export const statementFor = (forStatement: d.ForStatement): d.Statement => ({
-  type: "For",
-  forStatement,
-});
-
-export const statementForOf = (
-  forOfStatement: d.ForOfStatement,
-): d.Statement => ({
-  type: "ForOf",
-  forOfStatement,
-});
-
 export const arrayLiteral = (
   arrayItemList: ReadonlyArray<d.ArrayItem>,
 ): d.TsExpr => ({
@@ -786,11 +736,6 @@ export const arrayLiteral = (
 export const typeAssertion = (param: d.TypeAssertion): d.TsExpr => ({
   type: "TypeAssertion",
   typeAssertion: param,
-});
-
-export const statementSet = (setStatement: d.SetStatement): d.Statement => ({
-  type: "Set",
-  setStatement,
 });
 
 /**
