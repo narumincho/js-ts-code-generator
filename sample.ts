@@ -8,10 +8,10 @@ import {
   type Module,
   notEqual,
   stringLiteral,
-  typeUnion,
   variable,
 } from "./mod.ts";
 import * as statement from "./statement.ts";
+import * as type from "./type.ts";
 
 const serverModule: Module = {
   definitionList: [
@@ -55,7 +55,7 @@ const serverModule: Module = {
         statement.variableDefinition({
           isConst: true,
           name: identifierFromString("accept"),
-          type: typeUnion([{ type: "String" }, { type: "Undefined" }]),
+          type: type.union([{ type: "String" }, { type: "Undefined" }]),
           expr: get(
             get(
               variable(identifierFromString("request")),
