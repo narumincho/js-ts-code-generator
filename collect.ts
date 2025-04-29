@@ -1,6 +1,14 @@
-import * as d from "./data.ts";
-import { TsIdentifier } from "./identifier.ts";
-import { UsedNameAndModulePathSet } from "./interface.ts";
+import type * as d from "./data.ts";
+import type { TsIdentifier } from "./identifier.ts";
+
+/**
+ * 使われている名前, モジュールのパス
+ * モジュールの識別子を作るのに使う
+ */
+export type UsedNameAndModulePathSet = {
+  readonly usedNameSet: ReadonlySet<TsIdentifier>;
+  readonly modulePathSet: ReadonlySet<string>;
+};
 
 /**
  * グローバル空間とルートにある関数名の引数名、使っている外部モジュールのパスを集める
