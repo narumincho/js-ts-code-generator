@@ -1,14 +1,13 @@
-// c:\Users\narum\Documents\GitHub\js-ts-code-generator\type.ts
-import type * as d from "./data.ts";
-import * as identifier from "./identifier.ts";
+import type { LambdaExpr, TsMemberType, TsType } from "./data.ts";
+import { identifierFromString, type TsIdentifier } from "./identifier.ts";
 
 /**
  * `Array<elementType>`
  */
-export const arrayType = (elementType: d.TsType): d.TsType => ({
+export const arrayType = (elementType: TsType): TsType => ({
   type: "ScopeInGlobal",
   typeNameAndTypeParameter: {
-    name: identifier.identifierFromString("Array"),
+    name: identifierFromString("Array"),
     arguments: [elementType],
   },
 });
@@ -16,10 +15,10 @@ export const arrayType = (elementType: d.TsType): d.TsType => ({
 /**
  * `ReadonlyArray<elementType>`
  */
-export const readonlyArrayType = (elementType: d.TsType): d.TsType => ({
+export const readonlyArrayType = (elementType: TsType): TsType => ({
   type: "ScopeInGlobal",
   typeNameAndTypeParameter: {
-    name: identifier.identifierFromString("ReadonlyArray"),
+    name: identifierFromString("ReadonlyArray"),
     arguments: [elementType],
   },
 });
@@ -27,10 +26,10 @@ export const readonlyArrayType = (elementType: d.TsType): d.TsType => ({
 /**
  * `Uint8Array`
  */
-export const uint8ArrayType: d.TsType = {
+export const uint8ArrayType: TsType = {
   type: "ScopeInGlobal",
   typeNameAndTypeParameter: {
-    name: identifier.identifierFromString("Uint8Array"),
+    name: identifierFromString("Uint8Array"),
     arguments: [],
   },
 };
@@ -38,10 +37,10 @@ export const uint8ArrayType: d.TsType = {
 /**
  * `URL`
  */
-export const urlType: d.TsType = {
+export const urlType: TsType = {
   type: "ScopeInGlobal",
   typeNameAndTypeParameter: {
-    name: identifier.identifierFromString("URL"),
+    name: identifierFromString("URL"),
     arguments: [],
   },
 };
@@ -49,10 +48,10 @@ export const urlType: d.TsType = {
 /**
  * `Response`
  */
-export const responseType: d.TsType = {
+export const responseType: TsType = {
   type: "ScopeInGlobal",
   typeNameAndTypeParameter: {
-    name: identifier.identifierFromString("Response"),
+    name: identifierFromString("Response"),
     arguments: [],
   },
 };
@@ -60,10 +59,10 @@ export const responseType: d.TsType = {
 /**
  * `Request`
  */
-export const requestType: d.TsType = {
+export const requestType: TsType = {
   type: "ScopeInGlobal",
   typeNameAndTypeParameter: {
-    name: identifier.identifierFromString("Request"),
+    name: identifierFromString("Request"),
     arguments: [],
   },
 };
@@ -71,10 +70,10 @@ export const requestType: d.TsType = {
 /**
  * `Promise<returnType>`
  */
-export const promiseType = (returnType: d.TsType): d.TsType => ({
+export const promiseType = (returnType: TsType): TsType => ({
   type: "ScopeInGlobal",
   typeNameAndTypeParameter: {
-    name: identifier.identifierFromString("Promise"),
+    name: identifierFromString("Promise"),
     arguments: [returnType],
   },
 });
@@ -82,10 +81,10 @@ export const promiseType = (returnType: d.TsType): d.TsType => ({
 /**
  * `Date`
  */
-export const dateType: d.TsType = {
+export const dateType: TsType = {
   type: "ScopeInGlobal",
   typeNameAndTypeParameter: {
-    name: identifier.identifierFromString("Date"),
+    name: identifierFromString("Date"),
     arguments: [],
   },
 };
@@ -93,10 +92,10 @@ export const dateType: d.TsType = {
 /**
  * `Map<keyType, valueType>`
  */
-export const mapType = (keyType: d.TsType, valueType: d.TsType): d.TsType => ({
+export const mapType = (keyType: TsType, valueType: TsType): TsType => ({
   type: "ScopeInGlobal",
   typeNameAndTypeParameter: {
-    name: identifier.identifierFromString("Map"),
+    name: identifierFromString("Map"),
     arguments: [keyType, valueType],
   },
 });
@@ -105,12 +104,12 @@ export const mapType = (keyType: d.TsType, valueType: d.TsType): d.TsType => ({
  * `ReadonlyMap<keyType, valueType>`
  */
 export const readonlyMapType = (
-  keyType: d.TsType,
-  valueType: d.TsType,
-): d.TsType => ({
+  keyType: TsType,
+  valueType: TsType,
+): TsType => ({
   type: "ScopeInGlobal",
   typeNameAndTypeParameter: {
-    name: identifier.identifierFromString("ReadonlyMap"),
+    name: identifierFromString("ReadonlyMap"),
     arguments: [keyType, valueType],
   },
 });
@@ -118,10 +117,10 @@ export const readonlyMapType = (
 /**
  * `Set<elementType>`
  */
-export const setType = (elementType: d.TsType): d.TsType => ({
+export const setType = (elementType: TsType): TsType => ({
   type: "ScopeInGlobal",
   typeNameAndTypeParameter: {
-    name: identifier.identifierFromString("Set"),
+    name: identifierFromString("Set"),
     arguments: [elementType],
   },
 });
@@ -129,17 +128,17 @@ export const setType = (elementType: d.TsType): d.TsType => ({
 /**
  * `ReadonlySet<elementType>`
  */
-export const readonlySetType = (elementType: d.TsType): d.TsType => ({
+export const readonlySetType = (elementType: TsType): TsType => ({
   type: "ScopeInGlobal",
   typeNameAndTypeParameter: {
-    name: identifier.identifierFromString("ReadonlySet"),
+    name: identifierFromString("ReadonlySet"),
     arguments: [elementType],
   },
 });
 
 export const typeScopeInFileNoArguments = (
-  name: identifier.TsIdentifier,
-): d.TsType => ({
+  name: TsIdentifier,
+): TsType => ({
   type: "ScopeInFile",
   typeNameAndTypeParameter: {
     name,
@@ -147,14 +146,14 @@ export const typeScopeInFileNoArguments = (
   },
 });
 
-export const typeUnion = (tsTypeList: ReadonlyArray<d.TsType>): d.TsType => ({
+export const typeUnion = (tsTypeList: ReadonlyArray<TsType>): TsType => ({
   type: "Union",
   tsTypeList,
 });
 
 export const typeObject = (
-  tsMemberTypeList: ReadonlyArray<d.TsMemberType>,
-): d.TsType => ({
+  tsMemberTypeList: ReadonlyArray<TsMemberType>,
+): TsType => ({
   type: "Object",
   tsMemberTypeList,
 });
@@ -162,7 +161,7 @@ export const typeObject = (
 /**
  * ラムダ式の型を抽出する
  */
-export const lambdaToType = (lambda: d.LambdaExpr): d.TsType => {
+export const lambdaToType = (lambda: LambdaExpr): TsType => {
   return {
     type: "Function",
     functionType: {
