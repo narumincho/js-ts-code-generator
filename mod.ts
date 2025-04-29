@@ -3,8 +3,7 @@ import {
   initialIdentifierIndex,
   type TsIdentifier,
 } from "./identifier.ts";
-import type { UsedNameAndModulePathSet } from "./interface.ts";
-import { collectInCode } from "./collect.ts";
+import { collectInCode, type UsedNameAndModulePathSet } from "./collect.ts";
 import { toString } from "./toString.ts";
 import type { CodeType, JsTsCode } from "./data.ts";
 export * from "./identifier.ts";
@@ -31,7 +30,7 @@ export const generateCodeAsString = (
   { code, codeType, generatedByLinks = [] }: JsTsCodeToStringParameter,
 ): string => {
   // グローバル空間にある名前とimportしたモジュールのパスを集める
-  const usedNameAndModulePath: UsedNameAndModulePathSet = collectInCode(code);
+  const usedNameAndModulePath = collectInCode(code);
 
   return toString(
     code,

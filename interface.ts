@@ -2,15 +2,6 @@ import type * as d from "./data.ts";
 import * as identifier from "./identifier.ts";
 
 /**
- * 使われている名前, モジュールのパス
- * モジュールの識別子を作るのに使う
- */
-export type UsedNameAndModulePathSet = {
-  readonly usedNameSet: ReadonlySet<identifier.TsIdentifier>;
-  readonly modulePathSet: ReadonlySet<string>;
-};
-
-/**
  * プロパティの値を取得する。getByExprのシンタックスシュガー
  * @param expr 式
  * @param propertyName プロパティ名
