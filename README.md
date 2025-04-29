@@ -29,13 +29,11 @@ import {
   logicalAnd,
   type Module,
   notEqual,
-  statementEvaluateExpr,
-  statementIf,
-  statementVariableDefinition,
   stringLiteral,
   typeUnion,
   variable,
-} from "jsr:@narumincho/js-ts-code-generator";
+} from "./mod.ts";
+import * as statement from "./statement.ts";
 
 const serverModule: Module = {
   definitionList: [
@@ -76,7 +74,7 @@ const serverModule: Module = {
       ],
       returnType: { type: "Void" },
       statementList: [
-        statementVariableDefinition({
+        statement.variableDefinition({
           isConst: true,
           name: identifierFromString("accept"),
           type: typeUnion([{ type: "String" }, { type: "Undefined" }]),
@@ -88,7 +86,7 @@ const serverModule: Module = {
             "accept",
           ),
         }),
-        statementIf({
+        statement.if({
           condition: logicalAnd(
             notEqual(
               variable(identifierFromString("accept")),
@@ -101,7 +99,7 @@ const serverModule: Module = {
             ),
           ),
           thenStatementList: [
-            statementEvaluateExpr(
+            statement.evaluateExpr(
               callMethod(
                 variable(identifierFromString("response")),
                 "setHeader",
