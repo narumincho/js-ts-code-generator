@@ -1,10 +1,10 @@
-import type { LambdaExpr, TsMemberType, TsType } from "./data.ts";
+import type { TsMemberType, TsType } from "./data.ts";
 import { identifierFromString, type TsIdentifier } from "./identifier.ts";
 
 /**
  * `Array<elementType>`
  */
-export const arrayType = (elementType: TsType): TsType => ({
+export const Array = (elementType: TsType): TsType => ({
   type: "ScopeInGlobal",
   typeNameAndTypeParameter: {
     name: identifierFromString("Array"),
@@ -15,7 +15,7 @@ export const arrayType = (elementType: TsType): TsType => ({
 /**
  * `ReadonlyArray<elementType>`
  */
-export const readonlyArrayType = (elementType: TsType): TsType => ({
+export const ReadonlyArray = (elementType: TsType): TsType => ({
   type: "ScopeInGlobal",
   typeNameAndTypeParameter: {
     name: identifierFromString("ReadonlyArray"),
@@ -26,7 +26,7 @@ export const readonlyArrayType = (elementType: TsType): TsType => ({
 /**
  * `Uint8Array`
  */
-export const uint8ArrayType: TsType = {
+export const Uint8Array: TsType = {
   type: "ScopeInGlobal",
   typeNameAndTypeParameter: {
     name: identifierFromString("Uint8Array"),
@@ -37,7 +37,7 @@ export const uint8ArrayType: TsType = {
 /**
  * `URL`
  */
-export const urlType: TsType = {
+export const URL: TsType = {
   type: "ScopeInGlobal",
   typeNameAndTypeParameter: {
     name: identifierFromString("URL"),
@@ -48,7 +48,7 @@ export const urlType: TsType = {
 /**
  * `Response`
  */
-export const responseType: TsType = {
+export const Response: TsType = {
   type: "ScopeInGlobal",
   typeNameAndTypeParameter: {
     name: identifierFromString("Response"),
@@ -59,7 +59,7 @@ export const responseType: TsType = {
 /**
  * `Request`
  */
-export const requestType: TsType = {
+export const Request: TsType = {
   type: "ScopeInGlobal",
   typeNameAndTypeParameter: {
     name: identifierFromString("Request"),
@@ -70,7 +70,7 @@ export const requestType: TsType = {
 /**
  * `Promise<returnType>`
  */
-export const promiseType = (returnType: TsType): TsType => ({
+export const Promise = (returnType: TsType): TsType => ({
   type: "ScopeInGlobal",
   typeNameAndTypeParameter: {
     name: identifierFromString("Promise"),
@@ -81,7 +81,7 @@ export const promiseType = (returnType: TsType): TsType => ({
 /**
  * `Date`
  */
-export const dateType: TsType = {
+export const Date: TsType = {
   type: "ScopeInGlobal",
   typeNameAndTypeParameter: {
     name: identifierFromString("Date"),
@@ -92,7 +92,7 @@ export const dateType: TsType = {
 /**
  * `Map<keyType, valueType>`
  */
-export const mapType = (keyType: TsType, valueType: TsType): TsType => ({
+export const Map = (keyType: TsType, valueType: TsType): TsType => ({
   type: "ScopeInGlobal",
   typeNameAndTypeParameter: {
     name: identifierFromString("Map"),
@@ -103,7 +103,7 @@ export const mapType = (keyType: TsType, valueType: TsType): TsType => ({
 /**
  * `ReadonlyMap<keyType, valueType>`
  */
-export const readonlyMapType = (
+export const ReadonlyMap = (
   keyType: TsType,
   valueType: TsType,
 ): TsType => ({
@@ -117,7 +117,7 @@ export const readonlyMapType = (
 /**
  * `Set<elementType>`
  */
-export const setType = (elementType: TsType): TsType => ({
+export const Set = (elementType: TsType): TsType => ({
   type: "ScopeInGlobal",
   typeNameAndTypeParameter: {
     name: identifierFromString("Set"),
@@ -128,7 +128,7 @@ export const setType = (elementType: TsType): TsType => ({
 /**
  * `ReadonlySet<elementType>`
  */
-export const readonlySetType = (elementType: TsType): TsType => ({
+export const ReadonlySet = (elementType: TsType): TsType => ({
   type: "ScopeInGlobal",
   typeNameAndTypeParameter: {
     name: identifierFromString("ReadonlySet"),
@@ -136,7 +136,10 @@ export const readonlySetType = (elementType: TsType): TsType => ({
   },
 });
 
-export const typeScopeInFileNoArguments = (
+/**
+ * ファイルスコープ内の型を指定する (引数なし)
+ */
+export const scopeInFile = (
   name: TsIdentifier,
 ): TsType => ({
   type: "ScopeInFile",
@@ -146,28 +149,20 @@ export const typeScopeInFileNoArguments = (
   },
 });
 
-export const typeUnion = (tsTypeList: ReadonlyArray<TsType>): TsType => ({
+/**
+ * Union 型 `T | U`
+ */
+export const union = (tsTypeList: ReadonlyArray<TsType>): TsType => ({
   type: "Union",
   tsTypeList,
 });
 
-export const typeObject = (
+/**
+ * Object 型 `{ a: string, b: number }`
+ */
+export const object = (
   tsMemberTypeList: ReadonlyArray<TsMemberType>,
 ): TsType => ({
   type: "Object",
   tsMemberTypeList,
 });
-
-/**
- * ラムダ式の型を抽出する
- */
-export const lambdaToType = (lambda: LambdaExpr): TsType => {
-  return {
-    type: "Function",
-    functionType: {
-      parameterList: lambda.parameterList.map((parameter) => parameter.type),
-      return: lambda.returnType,
-      typeParameterList: lambda.typeParameterList,
-    },
-  };
-};

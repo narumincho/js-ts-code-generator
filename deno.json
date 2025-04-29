@@ -4,7 +4,8 @@
   "license": "MIT",
   "exports": {
     ".": "./mod.ts",
-    "./statement": "./statement.ts"
+    "./statement": "./statement.ts",
+    "./type": "./type.ts"
   },
   "compilerOptions": {
     "noUncheckedIndexedAccess": true,
