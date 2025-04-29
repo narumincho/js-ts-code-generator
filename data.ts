@@ -6,24 +6,22 @@ export type NonEmptyArray<T> = readonly [T, ...ReadonlyArray<T>];
  * 出力するコードの種類
  */
 export type CodeType = "JavaScript" | "TypeScript";
+
 /**
  * TypeScriptやJavaScriptのコードを表現する. TypeScriptでも出力できるように型情報をつける必要がある
  */
-export type JsTsCode = {
+export type Module = {
   /**
    * 外部に公開する定義
    */
-  readonly exportDefinitionList: ReadonlyArray<ExportDefinition>;
+  readonly definitionList: ReadonlyArray<Definition>;
   /**
    * 定義した後に実行するコード
    */
   readonly statementList: ReadonlyArray<Statement>;
 };
 
-/**
- * 外部に公開する定義 (外部に後悔しない定義も作れる!?)
- */
-export type ExportDefinition =
+export type Definition =
   | { readonly type: "typeAlias"; readonly typeAlias: TypeAlias }
   | { readonly type: "function"; readonly function: Function }
   | { readonly type: "variable"; readonly variable: Variable };
