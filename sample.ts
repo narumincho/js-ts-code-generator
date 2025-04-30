@@ -1,5 +1,5 @@
 import {
-  exportDefinitionFunction,
+  definitionFunction,
   generateCodeAsString,
   identifierFromString,
   type Module,
@@ -10,7 +10,7 @@ import * as expr from "./expr.ts";
 
 const serverModule: Module = {
   definitionList: [
-    exportDefinitionFunction({
+    definitionFunction({
       isAsync: false,
       name: identifierFromString("middleware"),
       document: "ミドルウェア",

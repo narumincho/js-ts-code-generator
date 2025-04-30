@@ -72,14 +72,14 @@ const createImportedModuleName = (
   return importedModuleNameMap;
 };
 
-export const exportDefinitionFunction = (
+export const definitionFunction = (
   func: Function,
 ): Definition => ({ type: "function", function: func });
 
-export const exportDefinitionTypeAlias = (
+export const definitionTypeAlias = (
   typeAlias: TypeAlias,
 ): Definition => ({ type: "typeAlias", typeAlias });
 
-export const exportDefinitionVariable = (
+export const definitionVariable = (
   variable: Variable,
 ): Definition => ({ type: "variable", variable });

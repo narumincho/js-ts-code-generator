@@ -34,7 +34,7 @@ const expressResponse: jsTs.TsType = {
 
 const sampleCode: jsTs.Module = {
   definitionList: [
-    jsTs.exportDefinitionFunction({
+    jsTs.definitionFunction({
       isAsync: false,
       name: identifierFromString("middleware"),
       typeParameterList: [],
@@ -78,7 +78,7 @@ Deno.test("not include revered word", () => {
   const codeAsString = jsTs.generateCodeAsString({
     code: {
       definitionList: [
-        jsTs.exportDefinitionFunction({
+        jsTs.definitionFunction({
           isAsync: false,
           name: identifierFromString("new"),
           document: "newという名前の関数",
@@ -101,7 +101,7 @@ Deno.test("識別子として使えない文字は, 変更される", () => {
   const codeAsString = jsTs.generateCodeAsString({
     code: {
       definitionList: [
-        jsTs.exportDefinitionFunction({
+        jsTs.definitionFunction({
           isAsync: false,
           name: identifierFromString("0name"),
           document: "0から始まる識別子",
@@ -165,7 +165,7 @@ Deno.test("escape string literal", () => {
 Deno.test("include function parameter name", () => {
   const nodeJsCode: jsTs.Module = {
     definitionList: [
-      jsTs.exportDefinitionFunction({
+      jsTs.definitionFunction({
         isAsync: false,
         name: identifierFromString("middleware"),
         document: "ミドルウェア",
@@ -262,7 +262,7 @@ Deno.test("get array index", () => {
   const code = jsTs.generateCodeAsString({
     code: {
       definitionList: [
-        jsTs.exportDefinitionFunction({
+        jsTs.definitionFunction({
           isAsync: false,
           name: identifierFromString("getZeroIndexElement"),
           document: "Uint8Arrayの0番目の要素を取得する",
@@ -326,7 +326,7 @@ Deno.test("type parameter", () => {
   const code = jsTs.generateCodeAsString({
     code: {
       definitionList: [
-        jsTs.exportDefinitionFunction({
+        jsTs.definitionFunction({
           isAsync: false,
           name: identifierFromString("sample"),
           document: "",
@@ -406,7 +406,7 @@ Deno.test("object literal return need parenthesis", () => {
   const code = jsTs.generateCodeAsString({
     code: {
       definitionList: [
-        jsTs.exportDefinitionFunction({
+        jsTs.definitionFunction({
           isAsync: false,
           name: identifierFromString("returnObject"),
           document: "",
@@ -575,7 +575,7 @@ Deno.test("switch", () => {
           ]),
         },
       },
-      jsTs.exportDefinitionFunction({
+      jsTs.definitionFunction({
         isAsync: false,
         name: identifierFromString("switchSample"),
         document: "switch文のテスト",
@@ -929,7 +929,7 @@ Deno.test("output optional type member", () => {
 Deno.test("read me code", () => {
   const serverCode: jsTs.Module = {
     definitionList: [
-      jsTs.exportDefinitionFunction({
+      jsTs.definitionFunction({
         isAsync: false,
         name: identifierFromString("middleware"),
         document: "ミドルウェア",
