@@ -4,14 +4,14 @@ import {
   type TsIdentifier,
 } from "./identifier.ts";
 import { collectInCode, type UsedNameAndModulePathSet } from "./collect.ts";
-import { toString } from "./toString.ts";
+import { moduleToString } from "./toString.ts";
 import type {
   CodeType,
   Definition,
-  Function,
+  FunctionDefinition,
   Module,
   TypeAlias,
-  Variable,
+  VariableDefinition,
 } from "./data.ts";
 export * from "./identifier.ts";
 export * from "./data.ts";
@@ -38,11 +38,10 @@ export const generateCodeAsString = (
   // グローバル空間にある名前とimportしたモジュールのパスを集める
   const usedNameAndModulePath = collectInCode(code);
 
-  return toString(
+  return moduleToString(
     code,
     {
       moduleMap: createImportedModuleName(usedNameAndModulePath),
-      usedNameSet: usedNameAndModulePath.usedNameSet,
       codeType,
     },
     generatedByLinks,
@@ -73,7 +72,7 @@ const createImportedModuleName = (
 };
 
 export const definitionFunction = (
-  func: Function,
+  func: FunctionDefinition,
 ): Definition => ({ type: "function", function: func });
 
 export const definitionTypeAlias = (
@@ -81,5 +80,5 @@ export const definitionTypeAlias = (
 ): Definition => ({ type: "typeAlias", typeAlias });
 
 export const definitionVariable = (
-  variable: Variable,
+  variable: VariableDefinition,
 ): Definition => ({ type: "variable", variable });

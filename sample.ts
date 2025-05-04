@@ -11,6 +11,7 @@ import * as expr from "./expr.ts";
 const serverModule: Module = {
   definitionList: [
     definitionFunction({
+      export: true,
       isAsync: false,
       name: identifierFromString("middleware"),
       document: "ミドルウェア",

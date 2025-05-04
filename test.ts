@@ -35,6 +35,7 @@ const expressResponse: jsTs.TsType = {
 const sampleCode: jsTs.Module = {
   definitionList: [
     jsTs.definitionFunction({
+      export: true,
       isAsync: false,
       name: identifierFromString("middleware"),
       typeParameterList: [],
@@ -79,6 +80,7 @@ Deno.test("not include revered word", () => {
     code: {
       definitionList: [
         jsTs.definitionFunction({
+          export: true,
           isAsync: false,
           name: identifierFromString("new"),
           document: "newという名前の関数",
@@ -102,6 +104,7 @@ Deno.test("識別子として使えない文字は, 変更される", () => {
     code: {
       definitionList: [
         jsTs.definitionFunction({
+          export: true,
           isAsync: false,
           name: identifierFromString("0name"),
           document: "0から始まる識別子",
@@ -140,6 +143,7 @@ Deno.test("escape string literal", () => {
       {
         type: "variable",
         variable: {
+          export: true,
           name: identifierFromString("stringValue"),
           document: "文字列リテラルでエスケープしているか調べる",
           type: { type: "String" },
@@ -166,6 +170,7 @@ Deno.test("include function parameter name", () => {
   const nodeJsCode: jsTs.Module = {
     definitionList: [
       jsTs.definitionFunction({
+        export: true,
         isAsync: false,
         name: identifierFromString("middleware"),
         document: "ミドルウェア",
@@ -263,6 +268,7 @@ Deno.test("get array index", () => {
     code: {
       definitionList: [
         jsTs.definitionFunction({
+          export: true,
           isAsync: false,
           name: identifierFromString("getZeroIndexElement"),
           document: "Uint8Arrayの0番目の要素を取得する",
@@ -327,6 +333,7 @@ Deno.test("type parameter", () => {
     code: {
       definitionList: [
         jsTs.definitionFunction({
+          export: true,
           isAsync: false,
           name: identifierFromString("sample"),
           document: "",
@@ -407,6 +414,7 @@ Deno.test("object literal return need parenthesis", () => {
     code: {
       definitionList: [
         jsTs.definitionFunction({
+          export: true,
           isAsync: false,
           name: identifierFromString("returnObject"),
           document: "",
@@ -532,6 +540,7 @@ Deno.test("switch", () => {
       {
         type: "typeAlias",
         typeAlias: {
+          export: true,
           name: identifierFromString("Result"),
           document: "Result型",
           namespace: [],
@@ -576,6 +585,7 @@ Deno.test("switch", () => {
         },
       },
       jsTs.definitionFunction({
+        export: true,
         isAsync: false,
         name: identifierFromString("switchSample"),
         document: "switch文のテスト",
@@ -677,6 +687,36 @@ Deno.test("Type Assertion", () => {
     codeType: "TypeScript",
   });
   console.log(codeAsString);
+  assertMatch(codeAsString, /as Date/u);
+});
+
+Deno.test("Type Assertion With globalThis", () => {
+  const code: jsTs.Module = {
+    definitionList: [
+      jsTs.definitionTypeAlias({
+        export: true,
+        name: identifierFromString("Date"),
+        document: "",
+        namespace: [],
+        type: { type: "String" },
+        typeParameterList: [],
+      }),
+    ],
+    statementList: [
+      statement.evaluateExpr({
+        type: "TypeAssertion",
+        typeAssertion: {
+          expr: expr.objectLiteral([]),
+          type: type.Date,
+        },
+      }),
+    ],
+  };
+  const codeAsString = jsTs.generateCodeAsString({
+    code,
+    codeType: "TypeScript",
+  });
+  console.log(codeAsString);
   assertMatch(codeAsString, /as globalThis.Date/u);
 });
 
@@ -686,6 +726,7 @@ Deno.test("Type Intersection", () => {
       {
         type: "typeAlias",
         typeAlias: {
+          export: true,
           name: identifierFromString("SampleIntersectionType"),
           document: "",
           namespace: [],
@@ -707,7 +748,7 @@ Deno.test("Type Intersection", () => {
     codeType: "TypeScript",
   });
   console.log(codeAsString);
-  assertMatch(codeAsString, /globalThis.Date & globalThis.Uint8Array/u);
+  assertMatch(codeAsString, /Date & Uint8Array/u);
 });
 
 Deno.test("object literal spread syntax", () => {
@@ -764,6 +805,7 @@ Deno.test("type property document", () => {
       {
         type: "typeAlias",
         typeAlias: {
+          export: true,
           name: identifierFromString("Time"),
           document: "初期のdefinyで使う時間の内部表現",
           namespace: [],
@@ -842,6 +884,7 @@ Deno.test("output lambda type parameter", () => {
           expr: {
             type: "Lambda",
             lambdaExpr: {
+              isAsync: false,
               parameterList: [
                 {
                   name: identifierFromString("input"),
@@ -894,6 +937,7 @@ Deno.test("output optional type member", () => {
       {
         type: "variable",
         variable: {
+          export: true,
           name: identifierFromString("value"),
           document: "年齢があってもなくてもいいやつ",
           type: type.object([
@@ -930,6 +974,7 @@ Deno.test("read me code", () => {
   const serverCode: jsTs.Module = {
     definitionList: [
       jsTs.definitionFunction({
+        export: true,
         isAsync: false,
         name: identifierFromString("middleware"),
         document: "ミドルウェア",
@@ -1020,7 +1065,7 @@ Deno.test("read me code", () => {
       codeType: "TypeScript",
     }),
     `/** generated by
- * - https://jsr.io/@narumincho/js-ts-code-generator@0.5.0
+ * - https://jsr.io/@narumincho/js-ts-code-generator@0.6.0
  * Do not edit!
  *
  * @module
@@ -1051,6 +1096,7 @@ Deno.test("import name", () => {
       {
         type: "variable",
         variable: {
+          export: true,
           name: identifierFromString("a"),
           document: "a",
           expr: expr.stringLiteral("aaa"),
@@ -1077,7 +1123,7 @@ Deno.test("import name", () => {
   assertEquals(
     codeAsString,
     `/** generated by
- * - https://jsr.io/@narumincho/js-ts-code-generator@0.5.0
+ * - https://jsr.io/@narumincho/js-ts-code-generator@0.6.0
  * Do not edit!
  *
  * @module

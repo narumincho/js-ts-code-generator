@@ -1,16 +1,16 @@
-import * as d from "../data.ts";
+import type * as d from "../data.ts";
 import {
   createIdentifier,
   initialIdentifierIndex,
   isSafePropertyName,
-  TsIdentifier,
+  type TsIdentifier,
 } from "../identifier.ts";
 import {
   documentToString,
   stringLiteralValueToString,
   typeParameterListToString,
 } from "./common.ts";
-import { Context } from "./context.ts";
+import type { Context } from "./context.ts";
 import { exprToString } from "./expr.ts";
 
 /**
@@ -53,6 +53,9 @@ export const typeToString = (
       return functionTypeToString(type_.functionType, context);
 
     case "Union":
+      if (type_.tsTypeList.length === 0) {
+        return "never";
+      }
       return type_.tsTypeList
         .map((pattern) => typeToString(pattern, context))
         .join(" | ");
@@ -74,7 +77,7 @@ export const typeToString = (
       );
 
     case "ScopeInGlobal": {
-      if (context.usedNameSet.has(type_.typeNameAndTypeParameter.name)) {
+      if (context.usedTypeNameSet.has(type_.typeNameAndTypeParameter.name)) {
         return (
           "globalThis." +
           type_.typeNameAndTypeParameter.name +

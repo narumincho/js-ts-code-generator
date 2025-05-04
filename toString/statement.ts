@@ -1,4 +1,4 @@
-import * as d from "../data.ts";
+import type * as d from "../data.ts";
 import {
   binaryOperatorToString,
   exprToString,
@@ -10,32 +10,59 @@ import {
   typeParameterListToString,
 } from "./common.ts";
 import { typeAnnotation } from "./type.ts";
-import { Context } from "./context.ts";
+import { addUsedName, type Context } from "./context.ts";
 
 export const statementListToString = (
   statementList: ReadonlyArray<d.Statement>,
   indent: number,
-  context: Context,
-): string =>
-  "{\n" +
-  statementList
-    .map((statement) =>
-      statementToTypeScriptCodeAsString(
-        statement,
-        indent + 1,
-        context,
+  c: Context,
+): string => {
+  const context: Context = addUsedName(c, {
+    variableNameSet: statementList
+      .flatMap((statement) => {
+        switch (statement.type) {
+          case "EvaluateExpr":
+          case "Set":
+          case "If":
+          case "ThrowError":
+          case "Return":
+          case "ReturnVoid":
+          case "Continue":
+            return [];
+          case "VariableDefinition":
+            return [statement.variableDefinitionStatement.name];
+          case "FunctionDefinition":
+            return [statement.functionDefinitionStatement.name];
+          case "For":
+          case "ForOf":
+          case "WhileTrue":
+          case "Break":
+          case "Switch":
+          case "TryCatch":
+            return [];
+        }
+      }),
+  });
+  return "{\n" +
+    statementList
+      .map((statement) =>
+        statementToString(
+          statement,
+          indent + 1,
+          context,
+        )
       )
-    )
-    .join("\n") +
-  "\n" +
-  indentNumberToString(indent) +
-  "}";
+      .join("\n") +
+    "\n" +
+    indentNumberToString(indent) +
+    "}";
+};
 
 /**
  * 文をTypeScriptのコードに変換する
  * @param statement 文
  */
-const statementToTypeScriptCodeAsString = (
+const statementToString = (
   statement: d.Statement,
   indent: number,
   context: Context,
@@ -131,7 +158,10 @@ const statementToTypeScriptCodeAsString = (
         context,
       );
 
-    case "For":
+    case "For": {
+      const c: Context = addUsedName(context, {
+        variableNameSet: [statement.forStatement.counterVariableName],
+      });
       return (
         indentString +
         "for (let " +
@@ -142,7 +172,7 @@ const statementToTypeScriptCodeAsString = (
         exprToString(
           statement.forStatement.untilExpr,
           indent,
-          context,
+          c,
         ) +
         "; " +
         statement.forStatement.counterVariableName +
@@ -150,11 +180,16 @@ const statementToTypeScriptCodeAsString = (
         statementListToString(
           statement.forStatement.statementList,
           indent,
-          context,
+          c,
         )
       );
+    }
 
-    case "ForOf":
+    case "ForOf": {
+      const c: Context = addUsedName(context, {
+        variableNameSet: [statement.forOfStatement.elementVariableName],
+      });
+
       return (
         indentString +
         "for (const " +
@@ -163,15 +198,16 @@ const statementToTypeScriptCodeAsString = (
         exprToString(
           statement.forOfStatement.iterableExpr,
           indent,
-          context,
+          c,
         ) +
         ")" +
         statementListToString(
           statement.forOfStatement.statementList,
           indent,
-          context,
+          c,
         )
       );
+    }
 
     case "WhileTrue":
       return (
@@ -216,28 +252,37 @@ const statementToTypeScriptCodeAsString = (
 const functionDefinitionStatementToString = (
   functionDefinition: d.FunctionDefinitionStatement,
   indent: number,
-  context: Context,
-): string =>
-  indentNumberToString(indent) +
-  "const " +
-  functionDefinition.name +
-  " = " +
-  typeParameterListToString(functionDefinition.typeParameterList, context) +
-  "(" +
-  functionDefinition.parameterList
-    .map(
-      (parameter) => parameter.name + typeAnnotation(parameter.type, context),
-    )
-    .join(", ") +
-  ")" +
-  typeAnnotation(functionDefinition.returnType, context) +
-  " => " +
-  lambdaBodyToString(
-    functionDefinition.statementList,
-    indent,
-    context,
-  ) +
-  ";";
+  c: Context,
+): string => {
+  const context: Context = addUsedName(c, {
+    variableNameSet: functionDefinition.parameterList.map((parameter) =>
+      parameter.name
+    ),
+    typeNameSet: functionDefinition.typeParameterList.map((parameter) =>
+      parameter.name
+    ),
+  });
+  return indentNumberToString(indent) +
+    "const " +
+    functionDefinition.name +
+    " = " +
+    typeParameterListToString(functionDefinition.typeParameterList, context) +
+    "(" +
+    functionDefinition.parameterList
+      .map(
+        (parameter) => parameter.name + typeAnnotation(parameter.type, context),
+      )
+      .join(", ") +
+    ")" +
+    typeAnnotation(functionDefinition.returnType, context) +
+    " => " +
+    lambdaBodyToString(
+      functionDefinition.statementList,
+      indent,
+      context,
+    ) +
+    ";";
+};
 
 const switchToString = (
   switch_: d.SwitchStatement,
