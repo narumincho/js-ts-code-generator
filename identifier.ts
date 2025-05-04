@@ -21,13 +21,12 @@ export const identifierFromString = (word: string): TsIdentifier => {
       : escapeChar(firstChar);
   const slicedWord = word.slice(1);
   for (const char of slicedWord) {
-    result +=
-      "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ$_0123456789"
-          .includes(
-            char,
-          )
-        ? char
-        : escapeChar(char);
+    result += "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ$_0123456789"
+        .includes(
+          char,
+        )
+      ? char
+      : escapeChar(char);
   }
   if (reservedByLanguageWordSet.has(word)) {
     return tsIdentifierFromString(result + "_");
@@ -109,6 +108,7 @@ const reservedByLanguageWordSet: ReadonlySet<string> = new Set([
   "top",
   "closed",
   "self",
+  "globalThis",
 ]);
 
 /**

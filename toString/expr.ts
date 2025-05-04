@@ -1,4 +1,4 @@
-import * as d from "../data.ts";
+import type * as d from "../data.ts";
 import { isIdentifier, isSafePropertyName } from "../identifier.ts";
 import {
   stringLiteralValueToString,
@@ -10,7 +10,7 @@ import {
   typeToString,
 } from "./type.ts";
 import { statementListToString } from "./statement.ts";
-import { Context } from "./context.ts";
+import { addUsedName, type Context } from "./context.ts";
 
 /**
  * 式をコードに変換する
@@ -76,23 +76,33 @@ export const exprToString = (
       );
 
     case "Lambda": {
+      const c: Context = addUsedName(context, {
+        variableNameSet: expr.lambdaExpr.parameterList.map((parameter) =>
+          parameter.name
+        ),
+        typeNameSet: expr.lambdaExpr.typeParameterList.map((parameter) =>
+          parameter.name
+        ),
+      });
+
       return (
+        (expr.lambdaExpr.isAsync ? "async " : "") +
         typeParameterListToString(expr.lambdaExpr.typeParameterList, context) +
         "(" +
         expr.lambdaExpr.parameterList
           .map(
             (parameter) =>
               parameter.name +
-              typeAnnotation(parameter.type, context),
+              typeAnnotation(parameter.type, c),
           )
           .join(", ") +
         ")" +
-        typeAnnotation(expr.lambdaExpr.returnType, context) +
+        typeAnnotation(expr.lambdaExpr.returnType, c) +
         " => " +
         lambdaBodyToString(
           expr.lambdaExpr.statementList,
           indent,
-          context,
+          c,
         )
       );
     }
@@ -101,7 +111,7 @@ export const exprToString = (
       return expr.tsIdentifier;
 
     case "GlobalObjects": {
-      if (context.usedNameSet.has(expr.tsIdentifier)) {
+      if (context.usedVariableNameSet.has(expr.tsIdentifier)) {
         return "globalThis." + expr.tsIdentifier;
       }
       return expr.tsIdentifier;
@@ -405,6 +415,7 @@ export const lambdaBodyToString = (
       {
         type: "Lambda",
         lambdaExpr: {
+          isAsync: false,
           typeParameterList: [],
           parameterList: [],
           returnType: { type: "Void" },

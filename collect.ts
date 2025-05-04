@@ -117,7 +117,7 @@ const collectInTypeAlias = (
   );
 
 const collectInFunctionDefinition = (
-  function_: d.Function,
+  function_: d.FunctionDefinition,
   rootScopeIdentifierSet: RootScopeIdentifierSet,
 ): UsedNameAndModulePathSet => {
   const parameterNameSet = new Set(
@@ -163,7 +163,7 @@ const collectInFunctionDefinition = (
 };
 
 const collectInVariableDefinition = (
-  variable: d.Variable,
+  variable: d.VariableDefinition,
   rootScopeIdentifierSet: RootScopeIdentifierSet,
 ): UsedNameAndModulePathSet =>
   concatCollectData(

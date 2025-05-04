@@ -77,7 +77,7 @@ export const typeToString = (
       );
 
     case "ScopeInGlobal": {
-      if (context.usedNameSet.has(type_.typeNameAndTypeParameter.name)) {
+      if (context.usedTypeNameSet.has(type_.typeNameAndTypeParameter.name)) {
         return (
           "globalThis." +
           type_.typeNameAndTypeParameter.name +

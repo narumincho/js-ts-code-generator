@@ -23,8 +23,8 @@ export type Module = {
 
 export type Definition =
   | { readonly type: "typeAlias"; readonly typeAlias: TypeAlias }
-  | { readonly type: "function"; readonly function: Function }
-  | { readonly type: "variable"; readonly variable: Variable };
+  | { readonly type: "function"; readonly function: FunctionDefinition }
+  | { readonly type: "variable"; readonly variable: VariableDefinition };
 
 /**
  * JavaScript の 文
@@ -62,6 +62,9 @@ export type Statement =
  * TypeAlias. `export type T = {}`
  */
 export type TypeAlias = {
+  /** 外部に公開するか */
+  readonly export: boolean;
+
   /**
    * 名前空間
    */
@@ -87,7 +90,10 @@ export type TypeAlias = {
 /**
  * 外部に公開する関数
  */
-export type Function = {
+export type FunctionDefinition = {
+  /** 外部に公開するか */
+  readonly export: boolean;
+
   readonly isAsync: boolean;
   /**
    * 外部に公開する関数の名前
@@ -160,7 +166,7 @@ export type TsExpr =
     readonly withTypeArguments: WithTypeArguments;
   };
 
-export type Variable = {
+export type VariableDefinition = {
   /**
    * 変数の名前
    */
@@ -177,8 +183,9 @@ export type Variable = {
    * 変数の式
    */
   readonly expr: TsExpr;
-  /** 外部に公開しないか */
-  readonly private?: boolean;
+
+  /** 外部に公開するか */
+  readonly export: boolean;
 };
 
 export type TsType =
@@ -512,6 +519,7 @@ export type KeyValue = {
  * ラムダ式
  */
 export type LambdaExpr = {
+  readonly isAsync: boolean;
   /**
    * パラメーターのリスト
    */
