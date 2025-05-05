@@ -1,10 +1,10 @@
-import type { TsMemberType, TsType } from "./data.ts";
-import { identifierFromString, type TsIdentifier } from "./identifier.ts";
+import type { MemberType, Type } from "./data.ts";
+import { type Identifier, identifierFromString } from "./identifier.ts";
 
 /**
  * `Array<elementType>`
  */
-export const Array = (elementType: TsType): TsType => ({
+export const Array = (elementType: Type): Type => ({
   type: "ScopeInGlobal",
   typeNameAndTypeParameter: {
     name: identifierFromString("Array"),
@@ -15,7 +15,7 @@ export const Array = (elementType: TsType): TsType => ({
 /**
  * `ReadonlyArray<elementType>`
  */
-export const ReadonlyArray = (elementType: TsType): TsType => ({
+export const ReadonlyArray = (elementType: Type): Type => ({
   type: "ScopeInGlobal",
   typeNameAndTypeParameter: {
     name: identifierFromString("ReadonlyArray"),
@@ -26,7 +26,7 @@ export const ReadonlyArray = (elementType: TsType): TsType => ({
 /**
  * `Uint8Array`
  */
-export const Uint8Array: TsType = {
+export const Uint8Array: Type = {
   type: "ScopeInGlobal",
   typeNameAndTypeParameter: {
     name: identifierFromString("Uint8Array"),
@@ -37,7 +37,7 @@ export const Uint8Array: TsType = {
 /**
  * `URL`
  */
-export const URL: TsType = {
+export const URL: Type = {
   type: "ScopeInGlobal",
   typeNameAndTypeParameter: {
     name: identifierFromString("URL"),
@@ -48,7 +48,7 @@ export const URL: TsType = {
 /**
  * `Response`
  */
-export const Response: TsType = {
+export const Response: Type = {
   type: "ScopeInGlobal",
   typeNameAndTypeParameter: {
     name: identifierFromString("Response"),
@@ -59,7 +59,7 @@ export const Response: TsType = {
 /**
  * `Request`
  */
-export const Request: TsType = {
+export const Request: Type = {
   type: "ScopeInGlobal",
   typeNameAndTypeParameter: {
     name: identifierFromString("Request"),
@@ -70,7 +70,7 @@ export const Request: TsType = {
 /**
  * `Promise<returnType>`
  */
-export const Promise = (returnType: TsType): TsType => ({
+export const Promise = (returnType: Type): Type => ({
   type: "ScopeInGlobal",
   typeNameAndTypeParameter: {
     name: identifierFromString("Promise"),
@@ -81,7 +81,7 @@ export const Promise = (returnType: TsType): TsType => ({
 /**
  * `Date`
  */
-export const Date: TsType = {
+export const Date: Type = {
   type: "ScopeInGlobal",
   typeNameAndTypeParameter: {
     name: identifierFromString("Date"),
@@ -92,7 +92,7 @@ export const Date: TsType = {
 /**
  * `Map<keyType, valueType>`
  */
-export const Map = (keyType: TsType, valueType: TsType): TsType => ({
+export const Map = (keyType: Type, valueType: Type): Type => ({
   type: "ScopeInGlobal",
   typeNameAndTypeParameter: {
     name: identifierFromString("Map"),
@@ -104,9 +104,9 @@ export const Map = (keyType: TsType, valueType: TsType): TsType => ({
  * `ReadonlyMap<keyType, valueType>`
  */
 export const ReadonlyMap = (
-  keyType: TsType,
-  valueType: TsType,
-): TsType => ({
+  keyType: Type,
+  valueType: Type,
+): Type => ({
   type: "ScopeInGlobal",
   typeNameAndTypeParameter: {
     name: identifierFromString("ReadonlyMap"),
@@ -117,7 +117,7 @@ export const ReadonlyMap = (
 /**
  * `Set<elementType>`
  */
-export const Set = (elementType: TsType): TsType => ({
+export const Set = (elementType: Type): Type => ({
   type: "ScopeInGlobal",
   typeNameAndTypeParameter: {
     name: identifierFromString("Set"),
@@ -128,7 +128,7 @@ export const Set = (elementType: TsType): TsType => ({
 /**
  * `ReadonlySet<elementType>`
  */
-export const ReadonlySet = (elementType: TsType): TsType => ({
+export const ReadonlySet = (elementType: Type): Type => ({
   type: "ScopeInGlobal",
   typeNameAndTypeParameter: {
     name: identifierFromString("ReadonlySet"),
@@ -140,8 +140,8 @@ export const ReadonlySet = (elementType: TsType): TsType => ({
  * ファイルスコープ内の型を指定する (引数なし)
  */
 export const scopeInFile = (
-  name: TsIdentifier,
-): TsType => ({
+  name: Identifier,
+): Type => ({
   type: "ScopeInFile",
   typeNameAndTypeParameter: {
     name,
@@ -152,7 +152,7 @@ export const scopeInFile = (
 /**
  * Union 型 `T | U`
  */
-export const union = (tsTypeList: ReadonlyArray<TsType>): TsType => ({
+export const union = (tsTypeList: ReadonlyArray<Type>): Type => ({
   type: "Union",
   tsTypeList,
 });
@@ -161,8 +161,8 @@ export const union = (tsTypeList: ReadonlyArray<TsType>): TsType => ({
  * Object 型 `{ a: string, b: number }`
  */
 export const object = (
-  tsMemberTypeList: ReadonlyArray<TsMemberType>,
-): TsType => ({
+  tsMemberTypeList: ReadonlyArray<MemberType>,
+): Type => ({
   type: "Object",
   tsMemberTypeList,
 });

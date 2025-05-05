@@ -1,4 +1,4 @@
-import type { TsIdentifier } from "./identifier.ts";
+import type { Identifier } from "./identifier.ts";
 
 export type NonEmptyArray<T> = readonly [T, ...ReadonlyArray<T>];
 
@@ -30,11 +30,11 @@ export type Definition =
  * JavaScript の 文
  */
 export type Statement =
-  | { readonly type: "EvaluateExpr"; readonly tsExpr: TsExpr }
+  | { readonly type: "EvaluateExpr"; readonly tsExpr: Expr }
   | { readonly type: "Set"; readonly setStatement: SetStatement }
   | { readonly type: "If"; readonly ifStatement: IfStatement }
-  | { readonly type: "ThrowError"; readonly tsExpr: TsExpr }
-  | { readonly type: "Return"; readonly tsExpr: TsExpr }
+  | { readonly type: "ThrowError"; readonly tsExpr: Expr }
+  | { readonly type: "Return"; readonly tsExpr: Expr }
   | { readonly type: "ReturnVoid" }
   | { readonly type: "Continue" }
   | {
@@ -68,11 +68,11 @@ export type TypeAlias = {
   /**
    * 名前空間
    */
-  readonly namespace: ReadonlyArray<TsIdentifier>;
+  readonly namespace: ReadonlyArray<Identifier>;
   /**
    * 型の名前
    */
-  readonly name: TsIdentifier;
+  readonly name: Identifier;
   /**
    * 型パラメーターのリスト
    */
@@ -84,7 +84,7 @@ export type TypeAlias = {
   /**
    * 型本体
    */
-  readonly type: TsType;
+  readonly type: Type;
 };
 
 /**
@@ -98,7 +98,7 @@ export type FunctionDefinition = {
   /**
    * 外部に公開する関数の名前
    */
-  readonly name: TsIdentifier;
+  readonly name: Identifier;
   /**
    * ドキュメント
    */
@@ -114,7 +114,7 @@ export type FunctionDefinition = {
   /**
    * 戻り値の型
    */
-  readonly returnType: TsType;
+  readonly returnType: Type;
   /**
    * 関数の本体
    */
@@ -124,7 +124,7 @@ export type FunctionDefinition = {
 /**
  * JavaScript の 式
  */
-export type TsExpr =
+export type Expr =
   | { readonly type: "NumberLiteral"; readonly int32: number }
   | { readonly type: "StringLiteral"; readonly string: string }
   | { readonly type: "BooleanLiteral"; readonly bool: boolean }
@@ -148,11 +148,11 @@ export type TsExpr =
   }
   | {
     readonly type: "ObjectLiteral";
-    readonly tsMemberList: ReadonlyArray<TsMember>;
+    readonly tsMemberList: ReadonlyArray<Member>;
   }
   | { readonly type: "Lambda"; readonly lambdaExpr: LambdaExpr }
-  | { readonly type: "Variable"; readonly tsIdentifier: TsIdentifier }
-  | { readonly type: "GlobalObjects"; readonly tsIdentifier: TsIdentifier }
+  | { readonly type: "Variable"; readonly tsIdentifier: Identifier }
+  | { readonly type: "GlobalObjects"; readonly tsIdentifier: Identifier }
   | {
     readonly type: "ImportedVariable";
     readonly importedVariable: ImportedVariable;
@@ -170,7 +170,7 @@ export type VariableDefinition = {
   /**
    * 変数の名前
    */
-  readonly name: TsIdentifier;
+  readonly name: Identifier;
   /**
    * ドキュメント
    */
@@ -178,17 +178,17 @@ export type VariableDefinition = {
   /**
    * 変数の型
    */
-  readonly type: TsType | undefined;
+  readonly type: Type | undefined;
   /**
    * 変数の式
    */
-  readonly expr: TsExpr;
+  readonly expr: Expr;
 
   /** 外部に公開するか */
   readonly export: boolean;
 };
 
-export type TsType =
+export type Type =
   | { readonly type: "Number" }
   | { readonly type: "String" }
   | { readonly type: "Boolean" }
@@ -199,10 +199,10 @@ export type TsType =
   | { readonly type: "unknown" }
   | {
     readonly type: "Object";
-    readonly tsMemberTypeList: ReadonlyArray<TsMemberType>;
+    readonly tsMemberTypeList: ReadonlyArray<MemberType>;
   }
   | { readonly type: "Function"; readonly functionType: FunctionType }
-  | { readonly type: "Union"; readonly tsTypeList: ReadonlyArray<TsType> }
+  | { readonly type: "Union"; readonly tsTypeList: ReadonlyArray<Type> }
   | {
     readonly type: "Intersection";
     readonly intersectionType: IntersectionType;
@@ -218,7 +218,7 @@ export type TsType =
   }
   | {
     readonly type: "WithNamespace";
-    readonly namespace: NonEmptyArray<TsIdentifier>;
+    readonly namespace: NonEmptyArray<Identifier>;
     readonly typeNameAndTypeParameter: TypeNameAndArguments;
   }
   | { readonly type: "StringLiteral"; readonly string: string }
@@ -231,7 +231,7 @@ export type SetStatement = {
   /**
    * 対象となる式. 指定の仕方によってはJSのSyntaxErrorになる
    */
-  readonly target: TsExpr;
+  readonly target: Expr;
   /**
    * 演算子を=の左につける
    */
@@ -239,7 +239,7 @@ export type SetStatement = {
   /**
    * 式
    */
-  readonly expr: TsExpr;
+  readonly expr: Expr;
 };
 
 /**
@@ -249,7 +249,7 @@ export type IfStatement = {
   /**
    * 条件の式
    */
-  readonly condition: TsExpr;
+  readonly condition: Expr;
   /**
    * 条件がtrueのときに実行する文
    */
@@ -267,7 +267,7 @@ export type UnaryOperatorExpr = {
   /**
    * 適用される式
    */
-  readonly expr: TsExpr;
+  readonly expr: Expr;
 };
 
 /**
@@ -291,11 +291,11 @@ export type BinaryOperatorExpr = {
   /**
    * 左の式
    */
-  readonly left: TsExpr;
+  readonly left: Expr;
   /**
    * 右の式
    */
-  readonly right: TsExpr;
+  readonly right: Expr;
 };
 
 /**
@@ -329,15 +329,15 @@ export type VariableDefinitionStatement = {
   /**
    * 変数名
    */
-  readonly name: TsIdentifier;
+  readonly name: Identifier;
   /**
    * 変数の型
    */
-  readonly type: TsType;
+  readonly type: Type;
   /**
    * 式
    */
-  readonly expr: TsExpr;
+  readonly expr: Expr;
   /**
    * constかどうか. falseはlet
    */
@@ -351,7 +351,7 @@ export type FunctionDefinitionStatement = {
   /**
    * 変数名
    */
-  readonly name: TsIdentifier;
+  readonly name: Identifier;
   /**
    * 型パラメーターのリスト
    */
@@ -363,7 +363,7 @@ export type FunctionDefinitionStatement = {
   /**
    * 戻り値の型
    */
-  readonly returnType: TsType;
+  readonly returnType: Type;
   /**
    * 関数本体
    */
@@ -371,8 +371,8 @@ export type FunctionDefinitionStatement = {
 };
 
 export type TypeParameter = {
-  readonly name: TsIdentifier;
-  readonly constraint?: TsType;
+  readonly name: Identifier;
+  readonly constraint?: Type;
 };
 
 /**
@@ -382,11 +382,11 @@ export type ForStatement = {
   /**
    * カウンタ変数名
    */
-  readonly counterVariableName: TsIdentifier;
+  readonly counterVariableName: Identifier;
   /**
    * ループの上限の式
    */
-  readonly untilExpr: TsExpr;
+  readonly untilExpr: Expr;
   /**
    * 繰り返す文
    */
@@ -400,23 +400,23 @@ export type SwitchStatement = {
   /**
    * switch(a) {} の a
    */
-  readonly expr: TsExpr;
+  readonly expr: Expr;
   /**
    * case "text": { statementList }
    */
-  readonly patternList: ReadonlyArray<TsPattern>;
+  readonly patternList: ReadonlyArray<Pattern>;
 };
 
 export type TryCatchStatement = {
   readonly tryStatementList: ReadonlyArray<Statement>;
-  readonly catchParameter: TsIdentifier;
+  readonly catchParameter: Identifier;
   readonly catchStatementList: ReadonlyArray<Statement>;
 };
 
 /**
  * switch文のcase "text": { statementList } の部分
  */
-export type TsPattern = {
+export type Pattern = {
   /**
    * case に使う文字列
    */
@@ -434,11 +434,11 @@ export type ForOfStatement = {
   /**
    * 要素の変数名
    */
-  readonly elementVariableName: TsIdentifier;
+  readonly elementVariableName: Identifier;
   /**
    * 繰り返す対象
    */
-  readonly iterableExpr: TsExpr;
+  readonly iterableExpr: Expr;
   /**
    * 繰り返す文
    */
@@ -452,7 +452,7 @@ export type ParameterWithDocument = {
   /**
    * パラメーター名
    */
-  readonly name: TsIdentifier;
+  readonly name: Identifier;
   /**
    * ドキュメント
    */
@@ -460,7 +460,7 @@ export type ParameterWithDocument = {
   /**
    * パラメーターの型
    */
-  readonly type: TsType;
+  readonly type: Type;
 };
 
 /**
@@ -470,15 +470,15 @@ export type ConditionalOperatorExpr = {
   /**
    * 条件の式
    */
-  readonly condition: TsExpr;
+  readonly condition: Expr;
   /**
    * 条件がtrueのときに評価される式
    */
-  readonly thenExpr: TsExpr;
+  readonly thenExpr: Expr;
   /**
    * 条件がfalseのときに評価される式
    */
-  readonly elseExpr: TsExpr;
+  readonly elseExpr: Expr;
 };
 
 /**
@@ -488,7 +488,7 @@ export type ArrayItem = {
   /**
    * 式
    */
-  readonly expr: TsExpr;
+  readonly expr: Expr;
   /**
    * スプレッド ...a のようにするか
    */
@@ -498,8 +498,8 @@ export type ArrayItem = {
 /**
  * JavaScriptのオブジェクトリテラルの要素
  */
-export type TsMember =
-  | { readonly type: "Spread"; readonly tsExpr: TsExpr }
+export type Member =
+  | { readonly type: "Spread"; readonly tsExpr: Expr }
   | { readonly type: "KeyValue"; readonly keyValue: KeyValue };
 
 /**
@@ -509,11 +509,11 @@ export type KeyValue = {
   /**
    * key
    */
-  readonly key: TsExpr;
+  readonly key: Expr;
   /**
    * value
    */
-  readonly value: TsExpr;
+  readonly value: Expr;
 };
 /**
  * ラムダ式
@@ -531,7 +531,7 @@ export type LambdaExpr = {
   /**
    * 戻り値の型
    */
-  readonly returnType: TsType;
+  readonly returnType: Type;
   /**
    * ラムダ式本体
    */
@@ -549,7 +549,7 @@ export type ImportedVariable = {
   /**
    * 変数名
    */
-  readonly name: TsIdentifier;
+  readonly name: Identifier;
 };
 
 /**
@@ -559,11 +559,11 @@ export type GetExpr = {
   /**
    * 式
    */
-  readonly expr: TsExpr;
+  readonly expr: Expr;
   /**
    * プロパティの式
    */
-  readonly propertyExpr: TsExpr;
+  readonly propertyExpr: Expr;
 };
 
 /**
@@ -573,11 +573,11 @@ export type CallExpr = {
   /**
    * 呼ばれる式
    */
-  readonly expr: TsExpr;
+  readonly expr: Expr;
   /**
    * パラメーター
    */
-  readonly parameterList: ReadonlyArray<TsExpr>;
+  readonly parameterList: ReadonlyArray<Expr>;
 };
 
 /**
@@ -587,28 +587,28 @@ export type TypeAssertion = {
   /**
    * 型アサーションを受ける式
    */
-  readonly expr: TsExpr;
+  readonly expr: Expr;
   /**
    * 型
    */
-  readonly type: TsType;
+  readonly type: Type;
 };
 
 export type WithTypeArguments = {
   /**
    * 型アサーションを受ける式
    */
-  readonly expr: TsExpr;
+  readonly expr: Expr;
   /**
    * 型
    */
-  readonly types: ReadonlyArray<TsType>;
+  readonly types: ReadonlyArray<Type>;
 };
 
 /**
  * オブジェクトのメンバーの型
  */
-export type TsMemberType = {
+export type MemberType = {
   /**
    * プロパティ名
    */
@@ -617,10 +617,15 @@ export type TsMemberType = {
    * 必須かどうか falseの場合 ? がつく
    */
   readonly required: boolean;
+
+  /**
+   * readonly かどうか
+   */
+  readonly readonly: boolean;
   /**
    * 型
    */
-  readonly type: TsType;
+  readonly type: Type;
   /**
    * ドキュメント
    */
@@ -632,7 +637,7 @@ export type PropertyName = {
   readonly value: string;
 } | {
   readonly type: "symbolExpr";
-  readonly value: TsExpr;
+  readonly value: Expr;
 };
 
 /**
@@ -646,25 +651,25 @@ export type FunctionType = {
   /**
    * パラメーターの型. 意味のない引数名は適当に付く
    */
-  readonly parameterList: ReadonlyArray<TsType>;
+  readonly parameterList: ReadonlyArray<Type>;
   /**
    * 戻り値の型
    */
-  readonly return: TsType;
+  readonly return: Type;
 };
 
 /**
  * パラメーター付きの型
  */
-export type TsTypeWithTypeParameter = {
+export type TypeWithTypeParameter = {
   /**
    * パラメーターをつけられる型
    */
-  readonly type: TsType;
+  readonly type: Type;
   /**
    * パラメーターに指定する型. なにも要素を入れなけければ T<>ではなく T の形式で出力される
    */
-  readonly typeParameterList: ReadonlyArray<TsType>;
+  readonly typeParameterList: ReadonlyArray<Type>;
 };
 
 /**
@@ -674,11 +679,11 @@ export type IntersectionType = {
   /**
    * 左に指定する型
    */
-  readonly left: TsType;
+  readonly left: Type;
   /**
    * 右に指定する型
    */
-  readonly right: TsType;
+  readonly right: Type;
 };
 
 /**
@@ -696,8 +701,8 @@ export type ImportedType = {
 };
 
 export type TypeNameAndArguments = {
-  readonly name: TsIdentifier;
-  readonly arguments: ReadonlyArray<TsType>;
+  readonly name: Identifier;
+  readonly arguments: ReadonlyArray<Type>;
 };
 
 /**
@@ -707,9 +712,9 @@ export type Parameter = {
   /**
    * パラメーター名
    */
-  readonly name: TsIdentifier;
+  readonly name: Identifier;
   /**
    * パラメーターの型
    */
-  readonly type: TsType;
+  readonly type: Type;
 };

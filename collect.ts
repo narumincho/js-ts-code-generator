@@ -1,12 +1,12 @@
 import type * as d from "./data.ts";
-import type { TsIdentifier } from "./identifier.ts";
+import type { Identifier } from "./identifier.ts";
 
 /**
  * 使われている名前, モジュールのパス
  * モジュールの識別子を作るのに使う
  */
 export type UsedNameAndModulePathSet = {
-  readonly usedNameSet: ReadonlySet<TsIdentifier>;
+  readonly usedNameSet: ReadonlySet<Identifier>;
   readonly modulePathSet: ReadonlySet<string>;
 };
 
@@ -34,8 +34,8 @@ export const collectInCode = (code: d.Module): UsedNameAndModulePathSet => {
 };
 
 type RootScopeIdentifierSet = {
-  rootScopeTypeNameSet: ReadonlySet<TsIdentifier>;
-  rootScopeVariableName: ReadonlySet<TsIdentifier>;
+  rootScopeTypeNameSet: ReadonlySet<Identifier>;
+  rootScopeVariableName: ReadonlySet<Identifier>;
 };
 
 /**
@@ -44,8 +44,8 @@ type RootScopeIdentifierSet = {
 const collectRootScopeIdentifier = (
   definitionList: ReadonlyArray<d.Definition>,
 ): RootScopeIdentifierSet => {
-  const typeNameSet: Set<TsIdentifier> = new Set();
-  const variableNameSet: Set<TsIdentifier> = new Set();
+  const typeNameSet: Set<Identifier> = new Set();
+  const variableNameSet: Set<Identifier> = new Set();
   for (const definition of definitionList) {
     switch (definition.type) {
       case "typeAlias":
@@ -189,9 +189,9 @@ const collectInVariableDefinition = (
  * グローバルで使われているものを収集したり、インポートしているものを収集する
  */
 const collectInExpr = (
-  expr: d.TsExpr,
-  localVariableNameSetList: ReadonlyArray<ReadonlySet<TsIdentifier>>,
-  typeParameterSetList: ReadonlyArray<ReadonlySet<TsIdentifier>>,
+  expr: d.Expr,
+  localVariableNameSetList: ReadonlyArray<ReadonlySet<Identifier>>,
+  typeParameterSetList: ReadonlyArray<ReadonlySet<Identifier>>,
   rootScopeIdentifierSet: RootScopeIdentifierSet,
 ): UsedNameAndModulePathSet => {
   switch (expr.type) {
@@ -411,8 +411,8 @@ const collectInExpr = (
 
 const collectCallExpr = (
   callExpr: d.CallExpr,
-  localVariableNameSetList: ReadonlyArray<ReadonlySet<TsIdentifier>>,
-  typeParameterSetList: ReadonlyArray<ReadonlySet<TsIdentifier>>,
+  localVariableNameSetList: ReadonlyArray<ReadonlySet<Identifier>>,
+  typeParameterSetList: ReadonlyArray<ReadonlySet<Identifier>>,
   rootScopeIdentifierSet: RootScopeIdentifierSet,
 ) =>
   concatCollectData(
@@ -433,10 +433,10 @@ const collectCallExpr = (
 
 const collectStatementList = (
   statementList: ReadonlyArray<d.Statement>,
-  localVariableNameSetList: ReadonlyArray<ReadonlySet<TsIdentifier>>,
-  typeParameterSetList: ReadonlyArray<ReadonlySet<TsIdentifier>>,
+  localVariableNameSetList: ReadonlyArray<ReadonlySet<Identifier>>,
+  typeParameterSetList: ReadonlyArray<ReadonlySet<Identifier>>,
   rootScopeIdentifierSet: RootScopeIdentifierSet,
-  parameterNameSet: ReadonlySet<TsIdentifier>,
+  parameterNameSet: ReadonlySet<Identifier>,
 ): UsedNameAndModulePathSet => {
   const newLocalVariableNameSetList = localVariableNameSetList.concat(
     new Set([...parameterNameSet, ...collectNameInStatement(statementList)]),
@@ -452,8 +452,8 @@ const collectStatementList = (
 
 const collectNameInStatement = (
   statementList: ReadonlyArray<d.Statement>,
-): ReadonlySet<TsIdentifier> => {
-  const identifierSet: Set<TsIdentifier> = new Set();
+): ReadonlySet<Identifier> => {
+  const identifierSet: Set<Identifier> = new Set();
   for (const statement of statementList) {
     switch (statement.type) {
       case "VariableDefinition":
@@ -468,8 +468,8 @@ const collectNameInStatement = (
 
 const collectInStatement = (
   statement: d.Statement,
-  localVariableNameSetList: ReadonlyArray<ReadonlySet<TsIdentifier>>,
-  typeParameterSetList: ReadonlyArray<ReadonlySet<TsIdentifier>>,
+  localVariableNameSetList: ReadonlyArray<ReadonlySet<Identifier>>,
+  typeParameterSetList: ReadonlyArray<ReadonlySet<Identifier>>,
   rootScopeIdentifierSet: RootScopeIdentifierSet,
 ): UsedNameAndModulePathSet => {
   switch (statement.type) {
@@ -685,9 +685,9 @@ const collectInStatement = (
  * @param type_ 型の式
  */
 const collectInType = (
-  type_: d.TsType,
+  type_: d.Type,
   rootScopeIdentifierSet: RootScopeIdentifierSet,
-  typeParameterSetList: ReadonlyArray<ReadonlySet<TsIdentifier>>,
+  typeParameterSetList: ReadonlyArray<ReadonlySet<Identifier>>,
 ): UsedNameAndModulePathSet => {
   switch (type_.type) {
     case "Number":
@@ -853,7 +853,7 @@ const collectList = <Element>(
   collectFunc: (element: Element) => UsedNameAndModulePathSet,
 ): UsedNameAndModulePathSet => {
   const modulePathSet: Set<string> = new Set();
-  const usedNameSet: Set<TsIdentifier> = new Set();
+  const usedNameSet: Set<Identifier> = new Set();
   for (const element of list) {
     const result = collectFunc(element);
     for (const path of result.modulePathSet) {

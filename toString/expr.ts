@@ -17,7 +17,7 @@ import { addUsedName, type Context } from "./context.ts";
  * @param expr 式
  */
 export const exprToString = (
-  expr: d.TsExpr,
+  expr: d.Expr,
   indent: number,
   context: Context,
 ): string => {
@@ -189,7 +189,7 @@ const arrayLiteralToString = (
   "]";
 
 const objectLiteralToString = (
-  memberList: ReadonlyArray<d.TsMember>,
+  memberList: ReadonlyArray<d.Member>,
   indent: number,
   context: Context,
 ): string =>
@@ -247,8 +247,8 @@ const unaryOperatorToString = (unaryOperator: d.UnaryOperator): string => {
 };
 
 const exprToStringWithCombineStrength = (
-  expr: d.TsExpr,
-  target: d.TsExpr,
+  expr: d.Expr,
+  target: d.Expr,
   indent: number,
   context: Context,
 ): string => {
@@ -259,7 +259,7 @@ const exprToStringWithCombineStrength = (
   return text;
 };
 
-const exprCombineStrength = (expr: d.TsExpr): number => {
+const exprCombineStrength = (expr: d.Expr): number => {
   switch (expr.type) {
     case "NumberLiteral":
     case "StringLiteral":
@@ -371,7 +371,7 @@ const conditionalOperatorToString = (
   indent: number,
   context: Context,
 ): string => {
-  const expr: d.TsExpr = {
+  const expr: d.Expr = {
     type: "ConditionalOperator",
     conditionalOperatorExpr: conditionalOperator,
   };
@@ -431,7 +431,7 @@ export const lambdaBodyToString = (
 };
 
 const callExprToString = (
-  expr: d.TsExpr,
+  expr: d.Expr,
   callExpr: d.CallExpr,
   indent: number,
   context: Context,
@@ -456,7 +456,7 @@ const callExprToString = (
  * の部分indexのExprがstringLiteralで識別子に使える文字なら`.name`のようになる
  */
 const indexAccessToString = (
-  indexExpr: d.TsExpr,
+  indexExpr: d.Expr,
   indent: number,
   context: Context,
 ): string => {

@@ -10,7 +10,7 @@ import * as type from "./type.ts";
 import * as expr from "./expr.ts";
 import { identifierFromString } from "./identifier.ts";
 
-const expressRequest: jsTs.TsType = {
+const expressRequest: jsTs.Type = {
   type: "ImportedType",
   importedType: {
     moduleName: "express",
@@ -21,7 +21,7 @@ const expressRequest: jsTs.TsType = {
   },
 };
 
-const expressResponse: jsTs.TsType = {
+const expressResponse: jsTs.Type = {
   type: "ImportedType",
   importedType: {
     moduleName: "express",
