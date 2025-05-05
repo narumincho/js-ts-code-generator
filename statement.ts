@@ -1,11 +1,11 @@
 // c:\Users\narum\Documents\GitHub\js-ts-code-generator\statement.ts
 import type {
+  Expr,
   ForOfStatement,
   ForStatement,
   IfStatement,
   SetStatement,
   Statement,
-  TsExpr,
   VariableDefinitionStatement,
 } from "./data.ts";
 import { identifierFromString } from "./identifier.ts";
@@ -17,12 +17,12 @@ import { callMethod } from "./expr.ts";
  * ```
  * @param expr 出力する式
  */
-export const consoleLog = (expr: TsExpr): Statement => ({
+export const consoleLog = (expr: Expr): Statement => ({
   type: "EvaluateExpr",
-  tsExpr: callMethod(
+  expr: callMethod(
     {
       type: "GlobalObjects",
-      tsIdentifier: identifierFromString("console"),
+      identifier: identifierFromString("console"),
     },
     "log",
     [expr],
@@ -33,9 +33,9 @@ export const consoleLog = (expr: TsExpr): Statement => ({
  * return 文 `return expr;`
  * @param expr 返す式
  */
-const statementReturn = (expr: TsExpr): Statement => ({
+const statementReturn = (expr: Expr): Statement => ({
   type: "Return",
-  tsExpr: expr,
+  expr: expr,
 });
 
 export { statementReturn as return };
@@ -44,9 +44,9 @@ export { statementReturn as return };
  * 式の評価文 `expr;`
  * @param expr 評価する式
  */
-export const evaluateExpr = (expr: TsExpr): Statement => ({
+export const evaluateExpr = (expr: Expr): Statement => ({
   type: "EvaluateExpr",
-  tsExpr: expr,
+  expr: expr,
 });
 
 /**

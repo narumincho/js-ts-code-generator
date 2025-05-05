@@ -1,10 +1,10 @@
 import type { CodeType } from "../data.ts";
-import type { TsIdentifier } from "../identifier.ts";
+import type { Identifier } from "../identifier.ts";
 
 export type Context = {
-  readonly moduleMap: ReadonlyMap<string, TsIdentifier>;
-  readonly usedVariableNameSet: ReadonlySet<TsIdentifier>;
-  readonly usedTypeNameSet: ReadonlySet<TsIdentifier>;
+  readonly moduleMap: ReadonlyMap<string, Identifier>;
+  readonly usedVariableNameSet: ReadonlySet<Identifier>;
+  readonly usedTypeNameSet: ReadonlySet<Identifier>;
   readonly codeType: CodeType;
 };
 
@@ -12,8 +12,8 @@ export const addUsedName = (context: Context, {
   variableNameSet,
   typeNameSet = [],
 }: {
-  variableNameSet: Iterable<TsIdentifier>;
-  typeNameSet?: Iterable<TsIdentifier>;
+  variableNameSet: Iterable<Identifier>;
+  typeNameSet?: Iterable<Identifier>;
 }): Context => {
   return {
     ...context,

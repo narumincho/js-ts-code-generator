@@ -6,7 +6,7 @@ import * as identifier from "./identifier.ts";
  * @param expr 式
  * @param propertyName プロパティ名
  */
-export const get = (expr: d.TsExpr, propertyName: string): d.TsExpr => ({
+export const get = (expr: d.Expr, propertyName: string): d.Expr => ({
   type: "Get",
   getExpr: {
     expr,
@@ -21,10 +21,10 @@ export const get = (expr: d.TsExpr, propertyName: string): d.TsExpr => ({
  * @param parameterList
  */
 export const callMethod = (
-  expr: d.TsExpr,
+  expr: d.Expr,
   methodName: string,
-  parameterList: ReadonlyArray<d.TsExpr>,
-): d.TsExpr => ({
+  parameterList: ReadonlyArray<d.Expr>,
+): d.Expr => ({
   type: "Call",
   callExpr: { expr: get(expr, methodName), parameterList },
 });
@@ -33,9 +33,9 @@ export const callMethod = (
  * `then` メソッドを呼ぶ
  */
 export const callThenMethod = (
-  expr: d.TsExpr,
+  expr: d.Expr,
   thenLambda: d.LambdaExpr,
-): d.TsExpr => ({
+): d.Expr => ({
   type: "Call",
   callExpr: {
     expr: get(expr, "then"),
@@ -47,9 +47,9 @@ export const callThenMethod = (
  * `catch` メソッドを呼ぶ
  */
 export const callCatchMethod = (
-  expr: d.TsExpr,
+  expr: d.Expr,
   thenLambda: d.LambdaExpr,
-): d.TsExpr => ({
+): d.Expr => ({
   type: "Call",
   callExpr: {
     expr: get(expr, "catch"),
@@ -61,7 +61,7 @@ export const callCatchMethod = (
  * 単項マイナス演算子 `-a`
  * @param expr 式
  */
-export const minus = (expr: d.TsExpr): d.TsExpr => ({
+export const minus = (expr: d.Expr): d.Expr => ({
   type: "UnaryOperator",
   unaryOperatorExpr: {
     operator: "Minus",
@@ -73,7 +73,7 @@ export const minus = (expr: d.TsExpr): d.TsExpr => ({
  * ビット否定 `~a`
  * @param expr 式
  */
-export const bitwiseNot = (expr: d.TsExpr): d.TsExpr => ({
+export const bitwiseNot = (expr: d.Expr): d.Expr => ({
   type: "UnaryOperator",
   unaryOperatorExpr: {
     operator: "BitwiseNot",
@@ -85,7 +85,7 @@ export const bitwiseNot = (expr: d.TsExpr): d.TsExpr => ({
  * 論理否定 `!a`
  * @param expr 式
  */
-export const logicalNot = (expr: d.TsExpr): d.TsExpr => ({
+export const logicalNot = (expr: d.Expr): d.Expr => ({
   type: "UnaryOperator",
   unaryOperatorExpr: {
     operator: "LogicalNot",
@@ -97,7 +97,7 @@ export const logicalNot = (expr: d.TsExpr): d.TsExpr => ({
  * typeof 演算子 `typeof a`
  * @param expr 式
  */
-export const typeofExpr = (expr: d.TsExpr): d.TsExpr => ({
+export const typeofExpr = (expr: d.Expr): d.Expr => ({
   type: "UnaryOperator",
   unaryOperatorExpr: {
     operator: "typeof",
@@ -110,7 +110,7 @@ export const typeofExpr = (expr: d.TsExpr): d.TsExpr => ({
  * @param left
  * @param right
  */
-export const exponentiation = (left: d.TsExpr, right: d.TsExpr): d.TsExpr => ({
+export const exponentiation = (left: d.Expr, right: d.Expr): d.Expr => ({
   type: "BinaryOperator",
   binaryOperatorExpr: {
     operator: "Exponentiation",
@@ -124,7 +124,7 @@ export const exponentiation = (left: d.TsExpr, right: d.TsExpr): d.TsExpr => ({
  * @param left 左辺
  * @param right 右辺
  */
-export const multiplication = (left: d.TsExpr, right: d.TsExpr): d.TsExpr => ({
+export const multiplication = (left: d.Expr, right: d.Expr): d.Expr => ({
   type: "BinaryOperator",
   binaryOperatorExpr: { operator: "Multiplication", left, right },
 });
@@ -134,7 +134,7 @@ export const multiplication = (left: d.TsExpr, right: d.TsExpr): d.TsExpr => ({
  * @param left 左辺
  * @param right 右辺
  */
-export const division = (left: d.TsExpr, right: d.TsExpr): d.TsExpr => ({
+export const division = (left: d.Expr, right: d.Expr): d.Expr => ({
   type: "BinaryOperator",
   binaryOperatorExpr: { operator: "Division", left, right },
 });
@@ -144,7 +144,7 @@ export const division = (left: d.TsExpr, right: d.TsExpr): d.TsExpr => ({
  * @param left 左辺
  * @param right 右辺
  */
-export const modulo = (left: d.TsExpr, right: d.TsExpr): d.TsExpr => ({
+export const modulo = (left: d.Expr, right: d.Expr): d.Expr => ({
   type: "BinaryOperator",
   binaryOperatorExpr: { operator: "Remainder", left, right },
 });
@@ -154,7 +154,7 @@ export const modulo = (left: d.TsExpr, right: d.TsExpr): d.TsExpr => ({
  * @param left 左辺
  * @param right 右辺
  */
-export const addition = (left: d.TsExpr, right: d.TsExpr): d.TsExpr => ({
+export const addition = (left: d.Expr, right: d.Expr): d.Expr => ({
   type: "BinaryOperator",
   binaryOperatorExpr: { operator: "Addition", left, right },
 });
@@ -164,7 +164,7 @@ export const addition = (left: d.TsExpr, right: d.TsExpr): d.TsExpr => ({
  * @param left 左辺
  * @param right 右辺
  */
-export const subtraction = (left: d.TsExpr, right: d.TsExpr): d.TsExpr => ({
+export const subtraction = (left: d.Expr, right: d.Expr): d.Expr => ({
   type: "BinaryOperator",
   binaryOperatorExpr: {
     operator: "Subtraction",
@@ -178,7 +178,7 @@ export const subtraction = (left: d.TsExpr, right: d.TsExpr): d.TsExpr => ({
  * @param left 左辺
  * @param right 右辺
  */
-export const leftShift = (left: d.TsExpr, right: d.TsExpr): d.TsExpr => ({
+export const leftShift = (left: d.Expr, right: d.Expr): d.Expr => ({
   type: "BinaryOperator",
   binaryOperatorExpr: {
     operator: "LeftShift",
@@ -193,9 +193,9 @@ export const leftShift = (left: d.TsExpr, right: d.TsExpr): d.TsExpr => ({
  * @param right 右辺
  */
 export const signedRightShift = (
-  left: d.TsExpr,
-  right: d.TsExpr,
-): d.TsExpr => ({
+  left: d.Expr,
+  right: d.Expr,
+): d.Expr => ({
   type: "BinaryOperator",
   binaryOperatorExpr: {
     operator: "SignedRightShift",
@@ -210,9 +210,9 @@ export const signedRightShift = (
  * @param right 右辺
  */
 export const unsignedRightShift = (
-  left: d.TsExpr,
-  right: d.TsExpr,
-): d.TsExpr => ({
+  left: d.Expr,
+  right: d.Expr,
+): d.Expr => ({
   type: "BinaryOperator",
   binaryOperatorExpr: {
     operator: "UnsignedRightShift",
@@ -226,7 +226,7 @@ export const unsignedRightShift = (
  * @param left 左辺
  * @param right 右辺
  */
-export const lessThan = (left: d.TsExpr, right: d.TsExpr): d.TsExpr => ({
+export const lessThan = (left: d.Expr, right: d.Expr): d.Expr => ({
   type: "BinaryOperator",
   binaryOperatorExpr: {
     operator: "LessThan",
@@ -240,7 +240,7 @@ export const lessThan = (left: d.TsExpr, right: d.TsExpr): d.TsExpr => ({
  * @param left 左辺
  * @param right 右辺
  */
-export const lessThanOrEqual = (left: d.TsExpr, right: d.TsExpr): d.TsExpr => ({
+export const lessThanOrEqual = (left: d.Expr, right: d.Expr): d.Expr => ({
   type: "BinaryOperator",
   binaryOperatorExpr: {
     operator: "LessThanOrEqual",
@@ -254,7 +254,7 @@ export const lessThanOrEqual = (left: d.TsExpr, right: d.TsExpr): d.TsExpr => ({
  * @param left 左辺
  * @param right 右辺
  */
-export const equal = (left: d.TsExpr, right: d.TsExpr): d.TsExpr => ({
+export const equal = (left: d.Expr, right: d.Expr): d.Expr => ({
   type: "BinaryOperator",
   binaryOperatorExpr: {
     operator: "Equal",
@@ -268,7 +268,7 @@ export const equal = (left: d.TsExpr, right: d.TsExpr): d.TsExpr => ({
  * @param left 左辺
  * @param right 右辺
  */
-export const notEqual = (left: d.TsExpr, right: d.TsExpr): d.TsExpr => ({
+export const notEqual = (left: d.Expr, right: d.Expr): d.Expr => ({
   type: "BinaryOperator",
   binaryOperatorExpr: {
     operator: "NotEqual",
@@ -282,7 +282,7 @@ export const notEqual = (left: d.TsExpr, right: d.TsExpr): d.TsExpr => ({
  * @param left 左辺
  * @param right 右辺
  */
-export const bitwiseAnd = (left: d.TsExpr, right: d.TsExpr): d.TsExpr => ({
+export const bitwiseAnd = (left: d.Expr, right: d.Expr): d.Expr => ({
   type: "BinaryOperator",
   binaryOperatorExpr: {
     operator: "BitwiseAnd",
@@ -291,7 +291,7 @@ export const bitwiseAnd = (left: d.TsExpr, right: d.TsExpr): d.TsExpr => ({
   },
 });
 
-export const bitwiseXOr = (left: d.TsExpr, right: d.TsExpr): d.TsExpr => ({
+export const bitwiseXOr = (left: d.Expr, right: d.Expr): d.Expr => ({
   type: "BinaryOperator",
   binaryOperatorExpr: {
     operator: "BitwiseXOr",
@@ -305,7 +305,7 @@ export const bitwiseXOr = (left: d.TsExpr, right: d.TsExpr): d.TsExpr => ({
  * @param left 左辺
  * @param right 右辺
  */
-export const bitwiseOr = (left: d.TsExpr, right: d.TsExpr): d.TsExpr => ({
+export const bitwiseOr = (left: d.Expr, right: d.Expr): d.Expr => ({
   type: "BinaryOperator",
   binaryOperatorExpr: {
     operator: "BitwiseOr",
@@ -319,7 +319,7 @@ export const bitwiseOr = (left: d.TsExpr, right: d.TsExpr): d.TsExpr => ({
  * @param left 左辺
  * @param right 右辺
  */
-export const logicalAnd = (left: d.TsExpr, right: d.TsExpr): d.TsExpr => ({
+export const logicalAnd = (left: d.Expr, right: d.Expr): d.Expr => ({
   type: "BinaryOperator",
   binaryOperatorExpr: {
     operator: "LogicalAnd",
@@ -333,7 +333,7 @@ export const logicalAnd = (left: d.TsExpr, right: d.TsExpr): d.TsExpr => ({
  * @param left 左辺
  * @param right 右辺
  */
-export const logicalOr = (left: d.TsExpr, right: d.TsExpr): d.TsExpr => ({
+export const logicalOr = (left: d.Expr, right: d.Expr): d.Expr => ({
   type: "BinaryOperator",
   binaryOperatorExpr: {
     operator: "LogicalOr",
@@ -348,9 +348,9 @@ export const logicalOr = (left: d.TsExpr, right: d.TsExpr): d.TsExpr => ({
  * ```
  */
 export const nullishCoalescing = (
-  left: d.TsExpr,
-  right: d.TsExpr,
-): d.TsExpr => ({
+  left: d.Expr,
+  right: d.Expr,
+): d.Expr => ({
   type: "BinaryOperator",
   binaryOperatorExpr: {
     operator: "??",
@@ -367,12 +367,12 @@ export const nullishCoalescing = (
  */
 export const callNumberMethod = (
   methodName: string,
-  parameterList: ReadonlyArray<d.TsExpr>,
-): d.TsExpr =>
+  parameterList: ReadonlyArray<d.Expr>,
+): d.Expr =>
   callMethod(
     {
       type: "GlobalObjects",
-      tsIdentifier: identifier.identifierFromString("Number"),
+      identifier: identifier.identifierFromString("Number"),
     },
     methodName,
     parameterList,
@@ -386,12 +386,12 @@ export const callNumberMethod = (
  */
 export const callMathMethod = (
   methodName: string,
-  parameterList: ReadonlyArray<d.TsExpr>,
-): d.TsExpr =>
+  parameterList: ReadonlyArray<d.Expr>,
+): d.Expr =>
   callMethod(
     {
       type: "GlobalObjects",
-      tsIdentifier: identifier.identifierFromString("Math"),
+      identifier: identifier.identifierFromString("Math"),
     },
     methodName,
     parameterList,
@@ -402,12 +402,12 @@ export const callMathMethod = (
  * new Date()
  * ```
  */
-export const newDate: d.TsExpr = {
+export const newDate: d.Expr = {
   type: "New",
   callExpr: {
     expr: {
       type: "GlobalObjects",
-      tsIdentifier: identifier.identifierFromString("Date"),
+      identifier: identifier.identifierFromString("Date"),
     },
     parameterList: [],
   },
@@ -418,12 +418,12 @@ export const newDate: d.TsExpr = {
  * new Uint8Array(lengthOrIterable)
  * ```
  */
-export const newUint8Array = (lengthOrIterable: d.TsExpr): d.TsExpr => ({
+export const newUint8Array = (lengthOrIterable: d.Expr): d.Expr => ({
   type: "New",
   callExpr: {
     expr: {
       type: "GlobalObjects",
-      tsIdentifier: identifier.identifierFromString("Uint8Array"),
+      identifier: identifier.identifierFromString("Uint8Array"),
     },
     parameterList: [lengthOrIterable],
   },
@@ -434,12 +434,12 @@ export const newUint8Array = (lengthOrIterable: d.TsExpr): d.TsExpr => ({
  * new URL(expr)
  * ```
  */
-export const newURL = (expr: d.TsExpr): d.TsExpr => ({
+export const newURL = (expr: d.Expr): d.Expr => ({
   type: "New",
   callExpr: {
     expr: {
       type: "GlobalObjects",
-      tsIdentifier: identifier.identifierFromString("URL"),
+      identifier: identifier.identifierFromString("URL"),
     },
     parameterList: [expr],
   },
@@ -451,14 +451,14 @@ export const newURL = (expr: d.TsExpr): d.TsExpr => ({
  * ```
  */
 export const callFetch = (
-  input: d.TsExpr,
-  init?: d.TsExpr | undefined,
-): d.TsExpr => ({
+  input: d.Expr,
+  init?: d.Expr | undefined,
+): d.Expr => ({
   type: "Call",
   callExpr: {
     expr: {
       type: "GlobalObjects",
-      tsIdentifier: identifier.identifierFromString("fetch"),
+      identifier: identifier.identifierFromString("fetch"),
     },
     parameterList: [input, ...(init === undefined ? [] : [init])],
   },
@@ -469,12 +469,12 @@ export const callFetch = (
  * new Map(initKeyValueList)
  * ```
  */
-export const newMap = (initKeyValueList: d.TsExpr): d.TsExpr => ({
+export const newMap = (initKeyValueList: d.Expr): d.Expr => ({
   type: "New",
   callExpr: {
     expr: {
       type: "GlobalObjects",
-      tsIdentifier: identifier.identifierFromString("Map"),
+      identifier: identifier.identifierFromString("Map"),
     },
     parameterList: [initKeyValueList],
   },
@@ -485,22 +485,22 @@ export const newMap = (initKeyValueList: d.TsExpr): d.TsExpr => ({
  * new Set(initValueList)
  * ```
  */
-export const newSet = (initValueList: d.TsExpr): d.TsExpr => ({
+export const newSet = (initValueList: d.Expr): d.Expr => ({
   type: "New",
   callExpr: {
     expr: {
       type: "GlobalObjects",
-      tsIdentifier: identifier.identifierFromString("Set"),
+      identifier: identifier.identifierFromString("Set"),
     },
     parameterList: [initValueList],
   },
 });
 
 export const objectLiteral = (
-  memberList: ReadonlyArray<d.TsMember>,
-): d.TsExpr => ({
+  memberList: ReadonlyArray<d.Member>,
+): d.Expr => ({
   type: "ObjectLiteral",
-  tsMemberList: memberList,
+  memberList: memberList,
 });
 
 /**
@@ -508,16 +508,16 @@ export const objectLiteral = (
  * array.map(parameter)
  * ```
  */
-export const arrayMap = (array: d.TsExpr, parameter: d.TsExpr): d.TsExpr => {
+export const arrayMap = (array: d.Expr, parameter: d.Expr): d.Expr => {
   return callMethod(array, "map", [parameter]);
 };
 
-export const variable = (name: identifier.TsIdentifier): d.TsExpr => ({
+export const variable = (name: identifier.Identifier): d.Expr => ({
   type: "Variable",
-  tsIdentifier: name,
+  identifier: name,
 });
 
-export const memberKeyValue = (key: string, value: d.TsExpr): d.TsMember => ({
+export const memberKeyValue = (key: string, value: d.Expr): d.Member => ({
   type: "KeyValue",
   keyValue: {
     key: stringLiteral(key),
@@ -525,59 +525,59 @@ export const memberKeyValue = (key: string, value: d.TsExpr): d.TsMember => ({
   },
 });
 
-export const newTextDecoder: d.TsExpr = {
+export const newTextDecoder: d.Expr = {
   type: "New",
   callExpr: {
     expr: {
       type: "GlobalObjects",
-      tsIdentifier: identifier.identifierFromString("TextDecoder"),
+      identifier: identifier.identifierFromString("TextDecoder"),
     },
     parameterList: [],
   },
 };
 
-export const newTextEncoder: d.TsExpr = {
+export const newTextEncoder: d.Expr = {
   type: "New",
   callExpr: {
     expr: {
       type: "GlobalObjects",
-      tsIdentifier: identifier.identifierFromString("TextEncoder"),
+      identifier: identifier.identifierFromString("TextEncoder"),
     },
     parameterList: [],
   },
 };
 
-export const numberLiteral = (number: number): d.TsExpr => ({
+export const numberLiteral = (number: number): d.Expr => ({
   type: "NumberLiteral",
   int32: number,
 });
 
-export const stringLiteral = (string: string): d.TsExpr => ({
+export const stringLiteral = (string: string): d.Expr => ({
   type: "StringLiteral",
   string,
 });
 
 export const call = (
-  expr: d.TsExpr,
-  parameterList: ReadonlyArray<d.TsExpr>,
-): d.TsExpr => ({
+  expr: d.Expr,
+  parameterList: ReadonlyArray<d.Expr>,
+): d.Expr => ({
   type: "Call",
   callExpr: { expr, parameterList },
 });
 
 export const arrayLiteral = (
   arrayItemList: ReadonlyArray<d.ArrayItem>,
-): d.TsExpr => ({
+): d.Expr => ({
   type: "ArrayLiteral",
   arrayItemList,
 });
 
-export const typeAssertion = (param: d.TypeAssertion): d.TsExpr => ({
+export const typeAssertion = (param: d.TypeAssertion): d.Expr => ({
   type: "TypeAssertion",
   typeAssertion: param,
 });
 
-export const symbolToStringTag: d.TsExpr = get({
+export const symbolToStringTag: d.Expr = get({
   type: "GlobalObjects",
-  tsIdentifier: identifier.identifierFromString("Symbol"),
+  identifier: identifier.identifierFromString("Symbol"),
 }, "toStringTag");

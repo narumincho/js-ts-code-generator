@@ -1,7 +1,7 @@
 import {
   createIdentifier,
+  type Identifier,
   initialIdentifierIndex,
-  type TsIdentifier,
 } from "./identifier.ts";
 import { collectInCode, type UsedNameAndModulePathSet } from "./collect.ts";
 import { moduleToString } from "./toString.ts";
@@ -54,9 +54,9 @@ export const generateCodeAsString = (
  */
 const createImportedModuleName = (
   usedNameAndModulePath: UsedNameAndModulePathSet,
-): ReadonlyMap<string, TsIdentifier> => {
+): ReadonlyMap<string, Identifier> => {
   let identifierIndex = initialIdentifierIndex;
-  const importedModuleNameMap = new Map<string, TsIdentifier>();
+  const importedModuleNameMap = new Map<string, Identifier>();
   for (const modulePath of usedNameAndModulePath.modulePathSet) {
     const identifierAndNextIdentifierIndex = createIdentifier(
       identifierIndex,

@@ -1,7 +1,7 @@
-export type TsIdentifier = string & { _tsIdentifier: never };
+export type Identifier = string & { _tsIdentifier: never };
 
-const tsIdentifierFromString = (value: string): TsIdentifier => {
-  return value as TsIdentifier;
+const tsIdentifierFromString = (value: string): Identifier => {
+  return value as Identifier;
 };
 
 /**
@@ -10,7 +10,7 @@ const tsIdentifierFromString = (value: string): TsIdentifier => {
  * 識別子に使えない文字が含まれていた場合, 末尾に_がつくか, $マークでエンコードされる
  * @param text
  */
-export const identifierFromString = (word: string): TsIdentifier => {
+export const identifierFromString = (word: string): Identifier => {
   const [firstChar] = word;
   if (firstChar === undefined) {
     return tsIdentifierFromString("$00");
@@ -127,7 +127,7 @@ export const initialIdentifierIndex = 0 as IdentifierIndex;
 export const createIdentifier = (
   identifierIndex: IdentifierIndex,
   reserved: ReadonlySet<string>,
-): { identifier: TsIdentifier; nextIdentifierIndex: IdentifierIndex } => {
+): { identifier: Identifier; nextIdentifierIndex: IdentifierIndex } => {
   let index: number = identifierIndex;
   while (true) {
     const result = createIdentifierByIndex(index);

@@ -1,12 +1,12 @@
-import type { TsMemberType, TsType } from "./data.ts";
-import { identifierFromString, type TsIdentifier } from "./identifier.ts";
+import type { MemberType, PropertyName, Type } from "./data.ts";
+import { type Identifier, identifierFromString } from "./identifier.ts";
 
 /**
  * `Array<elementType>`
  */
-export const Array = (elementType: TsType): TsType => ({
+export const Array = (elementType: Type): Type => ({
   type: "ScopeInGlobal",
-  typeNameAndTypeParameter: {
+  typeNameAndArguments: {
     name: identifierFromString("Array"),
     arguments: [elementType],
   },
@@ -15,9 +15,9 @@ export const Array = (elementType: TsType): TsType => ({
 /**
  * `ReadonlyArray<elementType>`
  */
-export const ReadonlyArray = (elementType: TsType): TsType => ({
+export const ReadonlyArray = (elementType: Type): Type => ({
   type: "ScopeInGlobal",
-  typeNameAndTypeParameter: {
+  typeNameAndArguments: {
     name: identifierFromString("ReadonlyArray"),
     arguments: [elementType],
   },
@@ -26,9 +26,9 @@ export const ReadonlyArray = (elementType: TsType): TsType => ({
 /**
  * `Uint8Array`
  */
-export const Uint8Array: TsType = {
+export const Uint8Array: Type = {
   type: "ScopeInGlobal",
-  typeNameAndTypeParameter: {
+  typeNameAndArguments: {
     name: identifierFromString("Uint8Array"),
     arguments: [],
   },
@@ -37,9 +37,9 @@ export const Uint8Array: TsType = {
 /**
  * `URL`
  */
-export const URL: TsType = {
+export const URL: Type = {
   type: "ScopeInGlobal",
-  typeNameAndTypeParameter: {
+  typeNameAndArguments: {
     name: identifierFromString("URL"),
     arguments: [],
   },
@@ -48,9 +48,9 @@ export const URL: TsType = {
 /**
  * `Response`
  */
-export const Response: TsType = {
+export const Response: Type = {
   type: "ScopeInGlobal",
-  typeNameAndTypeParameter: {
+  typeNameAndArguments: {
     name: identifierFromString("Response"),
     arguments: [],
   },
@@ -59,9 +59,9 @@ export const Response: TsType = {
 /**
  * `Request`
  */
-export const Request: TsType = {
+export const Request: Type = {
   type: "ScopeInGlobal",
-  typeNameAndTypeParameter: {
+  typeNameAndArguments: {
     name: identifierFromString("Request"),
     arguments: [],
   },
@@ -70,9 +70,9 @@ export const Request: TsType = {
 /**
  * `Promise<returnType>`
  */
-export const Promise = (returnType: TsType): TsType => ({
+export const Promise = (returnType: Type): Type => ({
   type: "ScopeInGlobal",
-  typeNameAndTypeParameter: {
+  typeNameAndArguments: {
     name: identifierFromString("Promise"),
     arguments: [returnType],
   },
@@ -81,9 +81,9 @@ export const Promise = (returnType: TsType): TsType => ({
 /**
  * `Date`
  */
-export const Date: TsType = {
+export const Date: Type = {
   type: "ScopeInGlobal",
-  typeNameAndTypeParameter: {
+  typeNameAndArguments: {
     name: identifierFromString("Date"),
     arguments: [],
   },
@@ -92,9 +92,9 @@ export const Date: TsType = {
 /**
  * `Map<keyType, valueType>`
  */
-export const Map = (keyType: TsType, valueType: TsType): TsType => ({
+export const Map = (keyType: Type, valueType: Type): Type => ({
   type: "ScopeInGlobal",
-  typeNameAndTypeParameter: {
+  typeNameAndArguments: {
     name: identifierFromString("Map"),
     arguments: [keyType, valueType],
   },
@@ -104,11 +104,11 @@ export const Map = (keyType: TsType, valueType: TsType): TsType => ({
  * `ReadonlyMap<keyType, valueType>`
  */
 export const ReadonlyMap = (
-  keyType: TsType,
-  valueType: TsType,
-): TsType => ({
+  keyType: Type,
+  valueType: Type,
+): Type => ({
   type: "ScopeInGlobal",
-  typeNameAndTypeParameter: {
+  typeNameAndArguments: {
     name: identifierFromString("ReadonlyMap"),
     arguments: [keyType, valueType],
   },
@@ -117,9 +117,9 @@ export const ReadonlyMap = (
 /**
  * `Set<elementType>`
  */
-export const Set = (elementType: TsType): TsType => ({
+export const Set = (elementType: Type): Type => ({
   type: "ScopeInGlobal",
-  typeNameAndTypeParameter: {
+  typeNameAndArguments: {
     name: identifierFromString("Set"),
     arguments: [elementType],
   },
@@ -128,9 +128,9 @@ export const Set = (elementType: TsType): TsType => ({
 /**
  * `ReadonlySet<elementType>`
  */
-export const ReadonlySet = (elementType: TsType): TsType => ({
+export const ReadonlySet = (elementType: Type): Type => ({
   type: "ScopeInGlobal",
-  typeNameAndTypeParameter: {
+  typeNameAndArguments: {
     name: identifierFromString("ReadonlySet"),
     arguments: [elementType],
   },
@@ -140,10 +140,10 @@ export const ReadonlySet = (elementType: TsType): TsType => ({
  * ファイルスコープ内の型を指定する (引数なし)
  */
 export const scopeInFile = (
-  name: TsIdentifier,
-): TsType => ({
+  name: Identifier,
+): Type => ({
   type: "ScopeInFile",
-  typeNameAndTypeParameter: {
+  typeNameAndArguments: {
     name,
     arguments: [],
   },
@@ -152,17 +152,40 @@ export const scopeInFile = (
 /**
  * Union 型 `T | U`
  */
-export const union = (tsTypeList: ReadonlyArray<TsType>): TsType => ({
+export const union = (typeList: ReadonlyArray<Type>): Type => ({
   type: "Union",
-  tsTypeList,
+  typeList,
 });
 
 /**
- * Object 型 `{ a: string, b: number }`
+ * Object 型 `{ readonly a: string, readonly b: number }`
  */
 export const object = (
-  tsMemberTypeList: ReadonlyArray<TsMemberType>,
-): TsType => ({
+  memberList: ReadonlyArray<ObjectMember>,
+): Type => ({
   type: "Object",
-  tsMemberTypeList,
+  memberList: memberList.map((member): MemberType => ({
+    name: member.name,
+    required: member.required ?? true,
+    readonly: member.readonly ?? true,
+    type: member.type,
+    document: member.document ?? "",
+  })),
 });
+
+export type ObjectMember = {
+  readonly name: PropertyName;
+  /**
+   * @default {true}
+   */
+  readonly required?: boolean;
+  /**
+   * @default {true}
+   */
+  readonly readonly?: boolean;
+  readonly type: Type;
+  /**
+   * @default {""}
+   */
+  readonly document?: string;
+};

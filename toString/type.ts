@@ -1,9 +1,9 @@
 import type * as d from "../data.ts";
 import {
   createIdentifier,
+  type Identifier,
   initialIdentifierIndex,
   isSafePropertyName,
-  type TsIdentifier,
 } from "../identifier.ts";
 import {
   documentToString,
@@ -18,7 +18,7 @@ import { exprToString } from "./expr.ts";
  * @param type_ 型の式
  */
 export const typeToString = (
-  type_: d.TsType,
+  type_: d.Type,
   context: Context,
 ): string => {
   switch (type_.type) {
@@ -47,16 +47,16 @@ export const typeToString = (
       return "unknown";
 
     case "Object":
-      return typeObjectToString(type_.tsMemberTypeList, context);
+      return typeObjectToString(type_.memberList, context);
 
     case "Function":
       return functionTypeToString(type_.functionType, context);
 
     case "Union":
-      if (type_.tsTypeList.length === 0) {
+      if (type_.typeList.length === 0) {
         return "never";
       }
-      return type_.tsTypeList
+      return type_.typeList
         .map((pattern) => typeToString(pattern, context))
         .join(" | ");
 
@@ -69,28 +69,28 @@ export const typeToString = (
 
     case "ScopeInFile":
       return (
-        type_.typeNameAndTypeParameter.name +
+        type_.typeNameAndArguments.name +
         typeArgumentsListToString(
-          type_.typeNameAndTypeParameter.arguments,
+          type_.typeNameAndArguments.arguments,
           context,
         )
       );
 
     case "ScopeInGlobal": {
-      if (context.usedTypeNameSet.has(type_.typeNameAndTypeParameter.name)) {
+      if (context.usedTypeNameSet.has(type_.typeNameAndArguments.name)) {
         return (
           "globalThis." +
-          type_.typeNameAndTypeParameter.name +
+          type_.typeNameAndArguments.name +
           typeArgumentsListToString(
-            type_.typeNameAndTypeParameter.arguments,
+            type_.typeNameAndArguments.arguments,
             context,
           )
         );
       }
       return (
-        type_.typeNameAndTypeParameter.name +
+        type_.typeNameAndArguments.name +
         typeArgumentsListToString(
-          type_.typeNameAndTypeParameter.arguments,
+          type_.typeNameAndArguments.arguments,
           context,
         )
       );
@@ -138,7 +138,7 @@ export const typeToString = (
 };
 
 export const typeArgumentsListToString = (
-  typeArguments: ReadonlyArray<d.TsType>,
+  typeArguments: ReadonlyArray<d.Type>,
   context: Context,
 ): string => {
   return typeArguments.length === 0 ? "" : "<" +
@@ -149,7 +149,7 @@ export const typeArgumentsListToString = (
 };
 
 const typeObjectToString = (
-  memberList: ReadonlyArray<d.TsMemberType>,
+  memberList: ReadonlyArray<d.MemberType>,
   context: Context,
 ): string =>
   "{ " +
@@ -157,7 +157,7 @@ const typeObjectToString = (
     .map(
       (member) =>
         documentToString(member.document) +
-        "readonly " +
+        (member.readonly ? "readonly " : "") +
         propertyNameToString(member.name, context) +
         (member.required ? "" : "?") +
         ": " +
@@ -190,8 +190,8 @@ const functionTypeToString = (
 ): string => {
   let index = initialIdentifierIndex;
   const parameterList: Array<{
-    name: TsIdentifier;
-    type: d.TsType;
+    name: Identifier;
+    type: d.Type;
   }> = [];
   for (const parameter of functionType.parameterList) {
     const indexAndIdentifier = createIdentifier(index, new Set());
@@ -220,7 +220,7 @@ const functionTypeToString = (
  * codeTypeがTypeScriptだった場合,`: string`のような型注釈をつける
  */
 export const typeAnnotation = (
-  type_: d.TsType,
+  type_: d.Type,
   context: Context,
 ): string => {
   switch (context.codeType) {
