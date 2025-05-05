@@ -283,39 +283,46 @@ const collectInExpr = (
 
     case "Lambda": {
       const parameterNameSet = new Set(
-        expr.lambdaExpr.parameterList.map((parameter) => parameter.name),
+        expr.lambda.parameterList.map((parameter) => parameter.name),
       );
       const newTypeParameterSetList = typeParameterSetList.concat(
         new Set(
-          expr.lambdaExpr.typeParameterList.map((e) => e.name),
+          expr.lambda.typeParameterList.map((e) => e.name),
         ),
+      );
+      const inParameter = collectList(
+        expr.lambda.parameterList,
+        (oneParameter) => {
+          const inParameter: UsedNameAndModulePathSet = {
+            usedNameSet: new Set([oneParameter.name]),
+            modulePathSet: new Set(),
+          };
+          return oneParameter.type
+            ? concatCollectData(
+              inParameter,
+              collectInType(
+                oneParameter.type,
+                rootScopeIdentifierSet,
+                newTypeParameterSetList,
+              ),
+            )
+            : inParameter;
+        },
       );
 
       return concatCollectData(
-        concatCollectData(
-          collectList(
-            expr.lambdaExpr.parameterList,
-            (oneParameter) =>
-              concatCollectData(
-                {
-                  usedNameSet: new Set([oneParameter.name]),
-                  modulePathSet: new Set(),
-                },
-                collectInType(
-                  oneParameter.type,
-                  rootScopeIdentifierSet,
-                  newTypeParameterSetList,
-                ),
-              ),
-          ),
-          collectInType(
-            expr.lambdaExpr.returnType,
-            rootScopeIdentifierSet,
-            newTypeParameterSetList,
-          ),
-        ),
+        expr.lambda.returnType
+          ? concatCollectData(
+            inParameter,
+            collectInType(
+              expr.lambda.returnType,
+              rootScopeIdentifierSet,
+              newTypeParameterSetList,
+            ),
+          )
+          : inParameter,
         collectStatementList(
-          expr.lambdaExpr.statementList,
+          expr.lambda.statementList,
           localVariableNameSetList,
           newTypeParameterSetList,
           rootScopeIdentifierSet,

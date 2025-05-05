@@ -883,7 +883,7 @@ Deno.test("output lambda type parameter", () => {
           },
           expr: {
             type: "Lambda",
-            lambdaExpr: {
+            lambda: {
               isAsync: false,
               parameterList: [
                 {

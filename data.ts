@@ -150,7 +150,7 @@ export type Expr =
     readonly type: "ObjectLiteral";
     readonly memberList: ReadonlyArray<Member>;
   }
-  | { readonly type: "Lambda"; readonly lambdaExpr: LambdaExpr }
+  | { readonly type: "Lambda"; readonly lambda: Lambda }
   | { readonly type: "Variable"; readonly identifier: Identifier }
   | { readonly type: "GlobalObjects"; readonly identifier: Identifier }
   | {
@@ -518,7 +518,7 @@ export type KeyValue = {
 /**
  * ラムダ式
  */
-export type LambdaExpr = {
+export type Lambda = {
   readonly isAsync: boolean;
   /**
    * パラメーターのリスト
@@ -531,7 +531,7 @@ export type LambdaExpr = {
   /**
    * 戻り値の型
    */
-  readonly returnType: Type;
+  readonly returnType: Type | undefined;
   /**
    * ラムダ式本体
    */
@@ -716,5 +716,5 @@ export type Parameter = {
   /**
    * パラメーターの型
    */
-  readonly type: Type;
+  readonly type: Type | undefined;
 };
