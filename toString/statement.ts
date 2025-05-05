@@ -72,7 +72,7 @@ const statementToString = (
     case "EvaluateExpr":
       return (
         indentString +
-        exprToString(statement.tsExpr, indent, context) +
+        exprToString(statement.expr, indent, context) +
         ";"
       );
 
@@ -114,7 +114,7 @@ const statementToString = (
       return (
         indentString +
         "throw " +
-        exprToString(statement.tsExpr, indent, context) +
+        exprToString(statement.expr, indent, context) +
         ";"
       );
 
@@ -122,7 +122,7 @@ const statementToString = (
       return (
         indentString +
         "return " +
-        exprToString(statement.tsExpr, indent, context) +
+        exprToString(statement.expr, indent, context) +
         ";"
       );
 

@@ -262,11 +262,11 @@ const collectInExpr = (
         ));
 
     case "ObjectLiteral":
-      return collectList(expr.tsMemberList, (member) => {
+      return collectList(expr.memberList, (member) => {
         switch (member.type) {
           case "Spread":
             return collectInExpr(
-              member.tsExpr,
+              member.expr,
               localVariableNameSetList,
               typeParameterSetList,
               rootScopeIdentifierSet,
@@ -475,7 +475,7 @@ const collectInStatement = (
   switch (statement.type) {
     case "EvaluateExpr":
       return collectInExpr(
-        statement.tsExpr,
+        statement.expr,
         localVariableNameSetList,
         typeParameterSetList,
         rootScopeIdentifierSet,
@@ -516,7 +516,7 @@ const collectInStatement = (
 
     case "ThrowError":
       return collectInExpr(
-        statement.tsExpr,
+        statement.expr,
         localVariableNameSetList,
         typeParameterSetList,
         rootScopeIdentifierSet,
@@ -524,7 +524,7 @@ const collectInStatement = (
 
     case "Return":
       return collectInExpr(
-        statement.tsExpr,
+        statement.expr,
         localVariableNameSetList,
         typeParameterSetList,
         rootScopeIdentifierSet,
@@ -706,7 +706,7 @@ const collectInType = (
 
     case "Object":
       return collectList(
-        [...type_.tsMemberTypeList],
+        [...type_.memberList],
         (member) =>
           collectInType(
             member.type,
@@ -739,7 +739,7 @@ const collectInType = (
 
     case "Union":
       return collectList(
-        type_.tsTypeList,
+        type_.typeList,
         (oneType) =>
           collectInType(oneType, rootScopeIdentifierSet, typeParameterSetList),
       );
@@ -779,10 +779,10 @@ const collectInType = (
       return concatCollectData(
         {
           modulePathSet: new Set(),
-          usedNameSet: new Set([type_.typeNameAndTypeParameter.name]),
+          usedNameSet: new Set([type_.typeNameAndArguments.name]),
         },
         collectList(
-          type_.typeNameAndTypeParameter.arguments,
+          type_.typeNameAndArguments.arguments,
           (parameter) =>
             collectInType(
               parameter,
@@ -813,10 +813,10 @@ const collectInType = (
       return concatCollectData(
         {
           modulePathSet: new Set(),
-          usedNameSet: new Set([type_.typeNameAndTypeParameter.name]),
+          usedNameSet: new Set([type_.typeNameAndArguments.name]),
         },
         collectList(
-          type_.typeNameAndTypeParameter.arguments,
+          type_.typeNameAndArguments.arguments,
           (parameter) =>
             collectInType(
               parameter,

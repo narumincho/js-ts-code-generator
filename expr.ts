@@ -372,7 +372,7 @@ export const callNumberMethod = (
   callMethod(
     {
       type: "GlobalObjects",
-      tsIdentifier: identifier.identifierFromString("Number"),
+      identifier: identifier.identifierFromString("Number"),
     },
     methodName,
     parameterList,
@@ -391,7 +391,7 @@ export const callMathMethod = (
   callMethod(
     {
       type: "GlobalObjects",
-      tsIdentifier: identifier.identifierFromString("Math"),
+      identifier: identifier.identifierFromString("Math"),
     },
     methodName,
     parameterList,
@@ -407,7 +407,7 @@ export const newDate: d.Expr = {
   callExpr: {
     expr: {
       type: "GlobalObjects",
-      tsIdentifier: identifier.identifierFromString("Date"),
+      identifier: identifier.identifierFromString("Date"),
     },
     parameterList: [],
   },
@@ -423,7 +423,7 @@ export const newUint8Array = (lengthOrIterable: d.Expr): d.Expr => ({
   callExpr: {
     expr: {
       type: "GlobalObjects",
-      tsIdentifier: identifier.identifierFromString("Uint8Array"),
+      identifier: identifier.identifierFromString("Uint8Array"),
     },
     parameterList: [lengthOrIterable],
   },
@@ -439,7 +439,7 @@ export const newURL = (expr: d.Expr): d.Expr => ({
   callExpr: {
     expr: {
       type: "GlobalObjects",
-      tsIdentifier: identifier.identifierFromString("URL"),
+      identifier: identifier.identifierFromString("URL"),
     },
     parameterList: [expr],
   },
@@ -458,7 +458,7 @@ export const callFetch = (
   callExpr: {
     expr: {
       type: "GlobalObjects",
-      tsIdentifier: identifier.identifierFromString("fetch"),
+      identifier: identifier.identifierFromString("fetch"),
     },
     parameterList: [input, ...(init === undefined ? [] : [init])],
   },
@@ -474,7 +474,7 @@ export const newMap = (initKeyValueList: d.Expr): d.Expr => ({
   callExpr: {
     expr: {
       type: "GlobalObjects",
-      tsIdentifier: identifier.identifierFromString("Map"),
+      identifier: identifier.identifierFromString("Map"),
     },
     parameterList: [initKeyValueList],
   },
@@ -490,7 +490,7 @@ export const newSet = (initValueList: d.Expr): d.Expr => ({
   callExpr: {
     expr: {
       type: "GlobalObjects",
-      tsIdentifier: identifier.identifierFromString("Set"),
+      identifier: identifier.identifierFromString("Set"),
     },
     parameterList: [initValueList],
   },
@@ -500,7 +500,7 @@ export const objectLiteral = (
   memberList: ReadonlyArray<d.Member>,
 ): d.Expr => ({
   type: "ObjectLiteral",
-  tsMemberList: memberList,
+  memberList: memberList,
 });
 
 /**
@@ -514,7 +514,7 @@ export const arrayMap = (array: d.Expr, parameter: d.Expr): d.Expr => {
 
 export const variable = (name: identifier.Identifier): d.Expr => ({
   type: "Variable",
-  tsIdentifier: name,
+  identifier: name,
 });
 
 export const memberKeyValue = (key: string, value: d.Expr): d.Member => ({
@@ -530,7 +530,7 @@ export const newTextDecoder: d.Expr = {
   callExpr: {
     expr: {
       type: "GlobalObjects",
-      tsIdentifier: identifier.identifierFromString("TextDecoder"),
+      identifier: identifier.identifierFromString("TextDecoder"),
     },
     parameterList: [],
   },
@@ -541,7 +541,7 @@ export const newTextEncoder: d.Expr = {
   callExpr: {
     expr: {
       type: "GlobalObjects",
-      tsIdentifier: identifier.identifierFromString("TextEncoder"),
+      identifier: identifier.identifierFromString("TextEncoder"),
     },
     parameterList: [],
   },
@@ -579,5 +579,5 @@ export const typeAssertion = (param: d.TypeAssertion): d.Expr => ({
 
 export const symbolToStringTag: d.Expr = get({
   type: "GlobalObjects",
-  tsIdentifier: identifier.identifierFromString("Symbol"),
+  identifier: identifier.identifierFromString("Symbol"),
 }, "toStringTag");

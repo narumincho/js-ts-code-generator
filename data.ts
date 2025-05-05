@@ -30,11 +30,11 @@ export type Definition =
  * JavaScript の 文
  */
 export type Statement =
-  | { readonly type: "EvaluateExpr"; readonly tsExpr: Expr }
+  | { readonly type: "EvaluateExpr"; readonly expr: Expr }
   | { readonly type: "Set"; readonly setStatement: SetStatement }
   | { readonly type: "If"; readonly ifStatement: IfStatement }
-  | { readonly type: "ThrowError"; readonly tsExpr: Expr }
-  | { readonly type: "Return"; readonly tsExpr: Expr }
+  | { readonly type: "ThrowError"; readonly expr: Expr }
+  | { readonly type: "Return"; readonly expr: Expr }
   | { readonly type: "ReturnVoid" }
   | { readonly type: "Continue" }
   | {
@@ -148,11 +148,11 @@ export type Expr =
   }
   | {
     readonly type: "ObjectLiteral";
-    readonly tsMemberList: ReadonlyArray<Member>;
+    readonly memberList: ReadonlyArray<Member>;
   }
   | { readonly type: "Lambda"; readonly lambdaExpr: LambdaExpr }
-  | { readonly type: "Variable"; readonly tsIdentifier: Identifier }
-  | { readonly type: "GlobalObjects"; readonly tsIdentifier: Identifier }
+  | { readonly type: "Variable"; readonly identifier: Identifier }
+  | { readonly type: "GlobalObjects"; readonly identifier: Identifier }
   | {
     readonly type: "ImportedVariable";
     readonly importedVariable: ImportedVariable;
@@ -199,10 +199,10 @@ export type Type =
   | { readonly type: "unknown" }
   | {
     readonly type: "Object";
-    readonly tsMemberTypeList: ReadonlyArray<MemberType>;
+    readonly memberList: ReadonlyArray<MemberType>;
   }
   | { readonly type: "Function"; readonly functionType: FunctionType }
-  | { readonly type: "Union"; readonly tsTypeList: ReadonlyArray<Type> }
+  | { readonly type: "Union"; readonly typeList: ReadonlyArray<Type> }
   | {
     readonly type: "Intersection";
     readonly intersectionType: IntersectionType;
@@ -210,11 +210,11 @@ export type Type =
   | { readonly type: "ImportedType"; readonly importedType: ImportedType }
   | {
     readonly type: "ScopeInFile";
-    readonly typeNameAndTypeParameter: TypeNameAndArguments;
+    readonly typeNameAndArguments: TypeNameAndArguments;
   }
   | {
     readonly type: "ScopeInGlobal";
-    readonly typeNameAndTypeParameter: TypeNameAndArguments;
+    readonly typeNameAndArguments: TypeNameAndArguments;
   }
   | {
     readonly type: "WithNamespace";
@@ -499,7 +499,7 @@ export type ArrayItem = {
  * JavaScriptのオブジェクトリテラルの要素
  */
 export type Member =
-  | { readonly type: "Spread"; readonly tsExpr: Expr }
+  | { readonly type: "Spread"; readonly expr: Expr }
   | { readonly type: "KeyValue"; readonly keyValue: KeyValue };
 
 /**

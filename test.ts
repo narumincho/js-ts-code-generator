@@ -599,7 +599,7 @@ Deno.test("switch", () => {
             document: "",
             type: {
               type: "ScopeInGlobal",
-              typeNameAndTypeParameter: {
+              typeNameAndArguments: {
                 name: identifierFromString("Result"),
                 arguments: [
                   type.scopeInFile(
@@ -784,7 +784,7 @@ Deno.test("object literal spread syntax", () => {
         expr.objectLiteral([
           {
             type: "Spread",
-            tsExpr: expr.variable(identifierFromString("value")),
+            expr: expr.variable(identifierFromString("value")),
           },
           expr.memberKeyValue("b", expr.numberLiteral(987)),
         ]),

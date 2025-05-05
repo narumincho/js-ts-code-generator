@@ -46,7 +46,7 @@ export const exprToString = (
 
     case "ObjectLiteral":
       return objectLiteralToString(
-        expr.tsMemberList,
+        expr.memberList,
         indent,
         context,
       );
@@ -108,13 +108,13 @@ export const exprToString = (
     }
 
     case "Variable":
-      return expr.tsIdentifier;
+      return expr.identifier;
 
     case "GlobalObjects": {
-      if (context.usedVariableNameSet.has(expr.tsIdentifier)) {
-        return "globalThis." + expr.tsIdentifier;
+      if (context.usedVariableNameSet.has(expr.identifier)) {
+        return "globalThis." + expr.identifier;
       }
-      return expr.tsIdentifier;
+      return expr.identifier;
     }
 
     case "ImportedVariable": {
@@ -199,7 +199,7 @@ const objectLiteralToString = (
       switch (member.type) {
         case "Spread":
           return (
-            "..." + exprToString(member.tsExpr, indent, context)
+            "..." + exprToString(member.expr, indent, context)
           );
         case "KeyValue": {
           if (member.keyValue.key.type !== "StringLiteral") {
@@ -215,7 +215,7 @@ const objectLiteralToString = (
           if (
             isIdentifier(key) &&
             member.keyValue.value.type === "Variable" &&
-            key === member.keyValue.value.tsIdentifier
+            key === member.keyValue.value.identifier
           ) {
             return member.keyValue.key.string;
           }
@@ -422,7 +422,7 @@ export const lambdaBodyToString = (
           statementList: [],
         },
       },
-      firstStatement.tsExpr,
+      firstStatement.expr,
       indent,
       context,
     );

@@ -19,10 +19,10 @@ import { callMethod } from "./expr.ts";
  */
 export const consoleLog = (expr: Expr): Statement => ({
   type: "EvaluateExpr",
-  tsExpr: callMethod(
+  expr: callMethod(
     {
       type: "GlobalObjects",
-      tsIdentifier: identifierFromString("console"),
+      identifier: identifierFromString("console"),
     },
     "log",
     [expr],
@@ -35,7 +35,7 @@ export const consoleLog = (expr: Expr): Statement => ({
  */
 const statementReturn = (expr: Expr): Statement => ({
   type: "Return",
-  tsExpr: expr,
+  expr: expr,
 });
 
 export { statementReturn as return };
@@ -46,7 +46,7 @@ export { statementReturn as return };
  */
 export const evaluateExpr = (expr: Expr): Statement => ({
   type: "EvaluateExpr",
-  tsExpr: expr,
+  expr: expr,
 });
 
 /**

@@ -47,16 +47,16 @@ export const typeToString = (
       return "unknown";
 
     case "Object":
-      return typeObjectToString(type_.tsMemberTypeList, context);
+      return typeObjectToString(type_.memberList, context);
 
     case "Function":
       return functionTypeToString(type_.functionType, context);
 
     case "Union":
-      if (type_.tsTypeList.length === 0) {
+      if (type_.typeList.length === 0) {
         return "never";
       }
-      return type_.tsTypeList
+      return type_.typeList
         .map((pattern) => typeToString(pattern, context))
         .join(" | ");
 
@@ -69,28 +69,28 @@ export const typeToString = (
 
     case "ScopeInFile":
       return (
-        type_.typeNameAndTypeParameter.name +
+        type_.typeNameAndArguments.name +
         typeArgumentsListToString(
-          type_.typeNameAndTypeParameter.arguments,
+          type_.typeNameAndArguments.arguments,
           context,
         )
       );
 
     case "ScopeInGlobal": {
-      if (context.usedTypeNameSet.has(type_.typeNameAndTypeParameter.name)) {
+      if (context.usedTypeNameSet.has(type_.typeNameAndArguments.name)) {
         return (
           "globalThis." +
-          type_.typeNameAndTypeParameter.name +
+          type_.typeNameAndArguments.name +
           typeArgumentsListToString(
-            type_.typeNameAndTypeParameter.arguments,
+            type_.typeNameAndArguments.arguments,
             context,
           )
         );
       }
       return (
-        type_.typeNameAndTypeParameter.name +
+        type_.typeNameAndArguments.name +
         typeArgumentsListToString(
-          type_.typeNameAndTypeParameter.arguments,
+          type_.typeNameAndArguments.arguments,
           context,
         )
       );
