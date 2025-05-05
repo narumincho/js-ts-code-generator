@@ -1,4 +1,4 @@
-import type { MemberType, Type } from "./data.ts";
+import type { MemberType, PropertyName, Type } from "./data.ts";
 import { type Identifier, identifierFromString } from "./identifier.ts";
 
 /**
@@ -152,17 +152,40 @@ export const scopeInFile = (
 /**
  * Union 型 `T | U`
  */
-export const union = (tsTypeList: ReadonlyArray<Type>): Type => ({
+export const union = (typeList: ReadonlyArray<Type>): Type => ({
   type: "Union",
-  typeList: tsTypeList,
+  typeList,
 });
 
 /**
- * Object 型 `{ a: string, b: number }`
+ * Object 型 `{ readonly a: string, readonly b: number }`
  */
 export const object = (
-  tsMemberTypeList: ReadonlyArray<MemberType>,
+  memberList: ReadonlyArray<ObjectMember>,
 ): Type => ({
   type: "Object",
-  memberList: tsMemberTypeList,
+  memberList: memberList.map((member): MemberType => ({
+    name: member.name,
+    required: member.required ?? true,
+    readonly: member.readonly ?? true,
+    type: member.type,
+    document: member.document ?? "",
+  })),
 });
+
+export type ObjectMember = {
+  readonly name: PropertyName;
+  /**
+   * @default {true}
+   */
+  readonly required?: boolean;
+  /**
+   * @default {true}
+   */
+  readonly readonly?: boolean;
+  readonly type: Type;
+  /**
+   * @default {""}
+   */
+  readonly document?: string;
+};

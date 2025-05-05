@@ -157,7 +157,7 @@ const typeObjectToString = (
     .map(
       (member) =>
         documentToString(member.document) +
-        "readonly " +
+        (member.readonly ? "readonly " : "") +
         propertyNameToString(member.name, context) +
         (member.required ? "" : "?") +
         ": " +
