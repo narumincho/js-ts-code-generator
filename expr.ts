@@ -34,12 +34,12 @@ export const callMethod = (
  */
 export const callThenMethod = (
   expr: d.Expr,
-  thenLambda: d.LambdaExpr,
+  thenLambda: d.Lambda,
 ): d.Expr => ({
   type: "Call",
   callExpr: {
     expr: get(expr, "then"),
-    parameterList: [{ type: "Lambda", lambdaExpr: thenLambda }],
+    parameterList: [{ type: "Lambda", lambda: thenLambda }],
   },
 });
 
@@ -48,12 +48,12 @@ export const callThenMethod = (
  */
 export const callCatchMethod = (
   expr: d.Expr,
-  thenLambda: d.LambdaExpr,
+  thenLambda: d.Lambda,
 ): d.Expr => ({
   type: "Call",
   callExpr: {
     expr: get(expr, "catch"),
-    parameterList: [{ type: "Lambda", lambdaExpr: thenLambda }],
+    parameterList: [{ type: "Lambda", lambda: thenLambda }],
   },
 });
 
@@ -581,3 +581,45 @@ export const symbolToStringTag: d.Expr = get({
   type: "GlobalObjects",
   identifier: identifier.identifierFromString("Symbol"),
 }, "toStringTag");
+
+export const lambda = ({
+  isAsync = false,
+  typeParameterList = [],
+  parameterList,
+  returnType,
+  statementList,
+}: LambdaInput): d.Expr => ({
+  type: "Lambda",
+  lambda: {
+    isAsync,
+    typeParameterList,
+    parameterList,
+    returnType,
+    statementList,
+  },
+});
+
+export type LambdaInput = {
+  /**
+   * @default {false}
+   */
+  readonly isAsync?: boolean;
+  /**
+   * パラメーターのリスト
+   */
+  readonly parameterList: ReadonlyArray<d.Parameter>;
+  /**
+   * 型パラメーターのリスト
+   *
+   * @default {[]}
+   */
+  readonly typeParameterList?: ReadonlyArray<d.TypeParameter>;
+  /**
+   * 戻り値の型
+   */
+  readonly returnType: d.Type | undefined;
+  /**
+   * ラムダ式本体
+   */
+  readonly statementList: ReadonlyArray<d.Statement>;
+};

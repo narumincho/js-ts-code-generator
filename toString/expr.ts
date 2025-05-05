@@ -77,30 +77,34 @@ export const exprToString = (
 
     case "Lambda": {
       const c: Context = addUsedName(context, {
-        variableNameSet: expr.lambdaExpr.parameterList.map((parameter) =>
+        variableNameSet: expr.lambda.parameterList.map((parameter) =>
           parameter.name
         ),
-        typeNameSet: expr.lambdaExpr.typeParameterList.map((parameter) =>
+        typeNameSet: expr.lambda.typeParameterList.map((parameter) =>
           parameter.name
         ),
       });
 
       return (
-        (expr.lambdaExpr.isAsync ? "async " : "") +
-        typeParameterListToString(expr.lambdaExpr.typeParameterList, context) +
+        (expr.lambda.isAsync ? "async " : "") +
+        typeParameterListToString(expr.lambda.typeParameterList, context) +
         "(" +
-        expr.lambdaExpr.parameterList
+        expr.lambda.parameterList
           .map(
             (parameter) =>
-              parameter.name +
-              typeAnnotation(parameter.type, c),
+              parameter.type
+                ? parameter.name +
+                  typeAnnotation(parameter.type, c)
+                : parameter.name,
           )
           .join(", ") +
         ")" +
-        typeAnnotation(expr.lambdaExpr.returnType, c) +
+        (expr.lambda.returnType
+          ? typeAnnotation(expr.lambda.returnType, c)
+          : "") +
         " => " +
         lambdaBodyToString(
-          expr.lambdaExpr.statementList,
+          expr.lambda.statementList,
           indent,
           c,
         )
@@ -414,7 +418,7 @@ export const lambdaBodyToString = (
     return exprToStringWithCombineStrength(
       {
         type: "Lambda",
-        lambdaExpr: {
+        lambda: {
           isAsync: false,
           typeParameterList: [],
           parameterList: [],

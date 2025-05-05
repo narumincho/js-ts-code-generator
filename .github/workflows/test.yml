@@ -12,6 +12,6 @@ jobs:
       - uses: denoland/setup-deno@v2
         with:
           deno-version: v2.x
-      - run: deno check .
+      - run: deno check
       - run: deno test
       - run: deno publish --dry-run
