@@ -137,15 +137,16 @@ export const ReadonlySet = (elementType: Type): Type => ({
 });
 
 /**
- * ファイルスコープ内の型を指定する (引数なし)
+ * ファイルスコープ内の型を指定する
  */
 export const scopeInFile = (
   name: Identifier,
+  argumentList: ReadonlyArray<Type> = [],
 ): Type => ({
   type: "ScopeInFile",
   typeNameAndArguments: {
     name,
-    arguments: [],
+    arguments: argumentList,
   },
 });
 
@@ -161,7 +162,7 @@ export const union = (typeList: ReadonlyArray<Type>): Type => ({
  * Object 型 `{ readonly a: string, readonly b: number }`
  */
 export const object = (
-  memberList: ReadonlyArray<ObjectMember>,
+  memberList: ReadonlyArray<MemberInput>,
 ): Type => ({
   type: "Object",
   memberList: memberList.map((member): MemberType => ({
@@ -173,7 +174,7 @@ export const object = (
   })),
 });
 
-export type ObjectMember = {
+export type MemberInput = {
   readonly name: PropertyName;
   /**
    * @default {true}

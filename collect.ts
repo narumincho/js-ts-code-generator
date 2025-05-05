@@ -796,10 +796,10 @@ const collectInType = (
       return concatCollectData(
         {
           modulePathSet: new Set(),
-          usedNameSet: new Set([type_.typeNameAndTypeParameter.name]),
+          usedNameSet: new Set([type_.typeNameAndArguments.name]),
         },
         collectList(
-          type_.typeNameAndTypeParameter.arguments,
+          type_.typeNameAndArguments.arguments,
           (parameter) =>
             collectInType(
               parameter,

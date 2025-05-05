@@ -100,9 +100,9 @@ export const typeToString = (
       return (
         type_.namespace.join(".") +
         "." +
-        type_.typeNameAndTypeParameter.name +
+        type_.typeNameAndArguments.name +
         typeArgumentsListToString(
-          type_.typeNameAndTypeParameter.arguments,
+          type_.typeNameAndArguments.arguments,
           context,
         )
       );

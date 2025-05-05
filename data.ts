@@ -219,7 +219,7 @@ export type Type =
   | {
     readonly type: "WithNamespace";
     readonly namespace: NonEmptyArray<Identifier>;
-    readonly typeNameAndTypeParameter: TypeNameAndArguments;
+    readonly typeNameAndArguments: TypeNameAndArguments;
   }
   | { readonly type: "StringLiteral"; readonly string: string }
   | { readonly type: "uniqueSymbol" };
