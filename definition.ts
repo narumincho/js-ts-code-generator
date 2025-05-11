@@ -1,7 +1,6 @@
 import type { Identifier } from "./identifier.ts";
 import type {
   Definition,
-  FunctionDefinition,
   ParameterWithDocument,
   Statement,
   Type,
