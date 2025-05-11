@@ -9,7 +9,7 @@ import type {
   VariableDefinition,
 } from "./data.ts";
 
-type FunctionDefinitionInput = {
+export type FunctionDefinitionInput = {
   /** 外部に公開するか */
   readonly export: boolean;
 
