@@ -126,32 +126,36 @@ const collectInFunctionDefinition = (
   const typeParameterNameSet = new Set(
     function_.typeParameterList.map((e) => e.name),
   );
-  return concatCollectData(
-    concatCollectData(
+  const functionNameAndParameterCollectData = concatCollectData(
+    {
+      modulePathSet: new Set(),
+      usedNameSet: new Set([function_.name]),
+    },
+    collectList(function_.parameterList, (parameter) =>
       concatCollectData(
         {
+          usedNameSet: new Set([parameter.name]),
           modulePathSet: new Set(),
-          usedNameSet: new Set([function_.name]),
         },
-        collectList(function_.parameterList, (parameter) =>
-          concatCollectData(
-            {
-              usedNameSet: new Set([parameter.name]),
-              modulePathSet: new Set(),
-            },
-            collectInType(
-              parameter.type,
-              rootScopeIdentifierSet,
-              [typeParameterNameSet],
-            ),
-          )),
-      ),
-      collectInType(
-        function_.returnType,
-        rootScopeIdentifierSet,
-        [typeParameterNameSet],
-      ),
-    ),
+        collectInType(
+          parameter.type,
+          rootScopeIdentifierSet,
+          [typeParameterNameSet],
+        ),
+      )),
+  );
+
+  return concatCollectData(
+    function_.returnType
+      ? concatCollectData(
+        functionNameAndParameterCollectData,
+        collectInType(
+          function_.returnType,
+          rootScopeIdentifierSet,
+          [typeParameterNameSet],
+        ),
+      )
+      : functionNameAndParameterCollectData,
     collectStatementList(
       function_.statementList,
       [],

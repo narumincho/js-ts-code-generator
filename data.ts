@@ -88,7 +88,7 @@ export type TypeAlias = {
 };
 
 /**
- * 外部に公開する関数
+ * 関数の定義
  */
 export type FunctionDefinition = {
   /** 外部に公開するか */
@@ -114,7 +114,7 @@ export type FunctionDefinition = {
   /**
    * 戻り値の型
    */
-  readonly returnType: Type;
+  readonly returnType: Type | undefined;
   /**
    * 関数の本体
    */

@@ -152,7 +152,7 @@ const exportFunctionToString = (
     )
     .join(", ") +
   ")" +
-  typeAnnotation(function_.returnType, context) +
+  (function_.returnType ? typeAnnotation(function_.returnType, context) : "") +
   " => " +
   lambdaBodyToString(function_.statementList, 0, context) +
   ";\n\n";
