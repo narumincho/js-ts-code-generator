@@ -138,10 +138,12 @@ const statementToString = (
         (statement.variableDefinitionStatement.isConst ? "const" : "let") +
         " " +
         statement.variableDefinitionStatement.name +
-        typeAnnotation(
-          statement.variableDefinitionStatement.type,
-          context,
-        ) +
+        (statement.variableDefinitionStatement.type
+          ? typeAnnotation(
+            statement.variableDefinitionStatement.type,
+            context,
+          )
+          : "") +
         " = " +
         exprToString(
           statement.variableDefinitionStatement.expr,

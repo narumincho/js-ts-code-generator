@@ -333,7 +333,7 @@ export type VariableDefinitionStatement = {
   /**
    * 変数の型
    */
-  readonly type: Type;
+  readonly type: Type | undefined;
   /**
    * 式
    */

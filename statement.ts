@@ -6,9 +6,9 @@ import type {
   IfStatement,
   SetStatement,
   Statement,
-  VariableDefinitionStatement,
+  Type,
 } from "./data.ts";
-import { identifierFromString } from "./identifier.ts";
+import { type Identifier, identifierFromString } from "./identifier.ts";
 import { callMethod } from "./expr.ts";
 
 /**
@@ -61,14 +61,49 @@ const statementIf = (ifStatement: IfStatement): Statement => ({
 export { statementIf as if };
 
 /**
+ * ローカル変数定義
+ */
+export type VariableDefinitionStatementInput = {
+  /**
+   * 変数名
+   */
+  readonly name: Identifier;
+  /**
+   * 変数の型
+   *
+   * @default {undefined}
+   */
+  readonly type?: Type | undefined;
+  /**
+   * 式
+   */
+  readonly expr: Expr;
+  /**
+   * constかどうか. falseはlet
+   *
+   * @default {true}
+   */
+  readonly isConst?: boolean;
+};
+
+/**
  * 変数定義文 `const name = expr;` または `let name = expr;`
- * @param variableDefinitionStatement 変数定義文のデータ
  */
 export const variableDefinition = (
-  variableDefinitionStatement: VariableDefinitionStatement,
+  {
+    name,
+    type = undefined,
+    expr,
+    isConst = true,
+  }: VariableDefinitionStatementInput,
 ): Statement => ({
   type: "VariableDefinition",
-  variableDefinitionStatement,
+  variableDefinitionStatement: {
+    name,
+    type,
+    expr,
+    isConst,
+  },
 });
 
 /**

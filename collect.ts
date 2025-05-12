@@ -548,20 +548,24 @@ const collectInStatement = (
         usedNameSet: new Set(),
       };
 
-    case "VariableDefinition":
-      return concatCollectData(
-        collectInExpr(
-          statement.variableDefinitionStatement.expr,
-          localVariableNameSetList,
-          typeParameterSetList,
-          rootScopeIdentifierSet,
-        ),
-        collectInType(
-          statement.variableDefinitionStatement.type,
-          rootScopeIdentifierSet,
-          typeParameterSetList,
-        ),
+    case "VariableDefinition": {
+      const exprCollectData = collectInExpr(
+        statement.variableDefinitionStatement.expr,
+        localVariableNameSetList,
+        typeParameterSetList,
+        rootScopeIdentifierSet,
       );
+      return statement.variableDefinitionStatement.type
+        ? concatCollectData(
+          exprCollectData,
+          collectInType(
+            statement.variableDefinitionStatement.type,
+            rootScopeIdentifierSet,
+            typeParameterSetList,
+          ),
+        )
+        : exprCollectData;
+    }
 
     case "FunctionDefinition": {
       const parameterNameSet = new Set(
